@@ -1,0 +1,7 @@
+{
+  "name": "quran-course-message-generator",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
