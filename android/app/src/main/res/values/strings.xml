@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">QC Text Gen</string>
+    <string name="title_activity_main">QC Text Gen</string>
+    <string name="package_name">com.quranCourse.textGenerator</string>
+    <string name="custom_url_scheme">com.quranCourse.textGenerator</string>
+</resources>

@@ -1,17 +1,95 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      ملخص اليوم
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">ملخص اليوم</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-header style="margin-top: 10px;">
+    <ion-toolbar>
+      <ion-title>
+        📗 المواد المعطاة
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list lines="full">
+    <ion-item *ngFor="let subject of subjectsChecklist">
+      <ion-grid>
+        <ion-row (click)="onSubjectCheckboxChange(subject)">
+          <ion-col>
+            <ion-label>{{ subject.name }}</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-checkbox style="float: left;width: auto;" [(ngModel)]="subject.checked"></ion-checkbox>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-list *ngIf="subject.checked" style="width: 100%">
+            <ion-item>
+              <ion-input #descriptionInput placeholder="ادخل بنود المادة"></ion-input>
+              <ion-button slot="end"
+                (click)="handleSubjectDescriptionButtonClick(subject, descriptionInput)">موافق</ion-button>
+            </ion-item>
+            <ion-item *ngFor="let subjectDescription of subject.descriptions">
+              <ion-text>{{subjectDescription}}</ion-text>
+            </ion-item>
+          </ion-list>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        🧒 الحضور
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list>
+    <ion-item *ngFor="let attendee of attendeesChecklist" (click)="onAttendeeCheckboxChange(attendee)">
+      <ion-label>{{ attendee.name }}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="attendee.checked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        🗣 التسميع
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list>
+    <ion-item *ngFor="let memorizer of memorizersChecklist" (click)="onMemorizerCheckboxChange(memorizer)">
+      <ion-label>{{ memorizer.name }}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="memorizer.checked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        ✍ النص المُولَّد
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-item class="remind-dashboard">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="full" (click)="shareText()">مشاركة</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="full" (click)="copyText()" color="light">نسخ</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-textarea [(ngModel)]="messageToBeShared" rows="15"></ion-textarea>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-content>

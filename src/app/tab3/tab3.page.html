@@ -1,17 +1,47 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      اعدادات الدورة
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title size="large">اعدادات الدورة</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-list>
+    <ion-row>
+      <ion-col size="8">
+        <ion-input label="وقت الدورة" placeholder="الساعة السادسة والنصف الى صلاة المغرب"
+          [(ngModel)]="courseTimeInputValue" (ionInput)="onCourseTimeInput($event)"></ion-input>
+      </ion-col>
+      <ion-col size="4" style="display: flex;" class="ion-justify-content-end">
+        <ion-button [disabled]="!studentsData" (click)="exportStudentsDataToExcel()">تصدير الى اكسل</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">اضافة طالب</ion-label>
+      <ion-input [(ngModel)]="studentInputValue" placeholder="ادخل اسم الطالب"></ion-input>
+    </ion-item>
+    <ion-button style="margin-top: 20px;" expand="full" (click)="addStudent()">اضافة طالب</ion-button>
+    <ion-title>اسماء الطلاب المضافين</ion-title>
+    <ion-item *ngFor="let student of students">
+      {{ student }}
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">اضافة مادة</ion-label>
+      <ion-input [(ngModel)]="subjectInputValue" placeholder="ادخل اسم المادة"></ion-input>
+    </ion-item>
+    <ion-button style="margin-top: 20px;" expand="full" (click)="addSubject()">اضافة مادة</ion-button>
+    <ion-title>اسماء المواد المضافة</ion-title>
+    <ion-item *ngFor="let subject of subjects">
+      {{ subject }}
+    </ion-item>
+  </ion-list>
 </ion-content>

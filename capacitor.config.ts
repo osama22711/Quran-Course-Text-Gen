@@ -1,9 +1,10 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'quran-course-message-generator',
-  webDir: 'www'
+  appId: 'com.quranCourse.textGenerator',
+  appName: 'QC Text Gen',
+  webDir: 'www',
+  bundledWebRuntime: false
 };
 
 export default config;

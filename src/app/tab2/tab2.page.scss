@@ -1,0 +1,25 @@
+:host {
+
+    ion-list,
+    .remind-dashboard {
+        width: 95%;
+        margin: auto;
+        margin-top: 20px;
+        filter: drop-shadow(2px 4px 7px #00000033);
+        padding: 20px;
+    }
+
+    .remind-dashboard {
+        margin-top: 20px;
+        padding: 0;
+
+        ion-grid {
+            padding: 20px;
+        }
+
+        ion-textarea {
+            margin-top: 20px;
+            border-top: 1px solid #595959;
+        }
+    }
+}

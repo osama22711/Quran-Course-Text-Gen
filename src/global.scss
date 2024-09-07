@@ -35,3 +35,85 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+/* Extra Light */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-extralight.ttf') format('truetype');
+    font-weight: 200;
+    /* Extra Light */
+}
+
+/* Light */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-light.ttf') format('truetype');
+    font-weight: 300;
+    /* Light */
+}
+
+/* Regular */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-regular.ttf') format('truetype');
+    font-weight: 400;
+    /* Regular */
+}
+
+/* Medium */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-medium.ttf') format('truetype');
+    font-weight: 500;
+    /* Medium */
+}
+
+/* Semi Bold */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-semibold.ttf') format('truetype');
+    font-weight: 600;
+    /* Semi Bold */
+}
+
+/* Bold */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-bold.ttf') format('truetype');
+    font-weight: 700;
+    /* Bold */
+}
+
+/* Extra Bold */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-extrabold.ttf') format('truetype');
+    font-weight: 800;
+    /* Extra Bold */
+}
+
+/* Black */
+@font-face {
+    font-family: 'Tajawal';
+    src: url('/src/assets/fonts/tajawal-black.ttf') format('truetype');
+    font-weight: 900;
+    /* Black */
+}
+
+html {
+    font-family: 'Tajawal', sans-serif;
+    --ion-dynamic-font: var(--ion-default-dynamic-font);
+    --ion-font-family: 'Tajawal', sans-serif;
+    font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+}
