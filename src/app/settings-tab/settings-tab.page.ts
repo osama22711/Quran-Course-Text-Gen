@@ -1,22 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CourseTimeInStringState, Student, StudentsState, SubjectsState } from 'src/store/app-state.service';
-import { ActionSheetButton, AlertController, Platform } from '@ionic/angular';
+import { ActionSheetButton, AlertController } from '@ionic/angular';
 import { ExcelExporterService } from '../services/excel-exporter.service';
 import { HelperService } from '../services/helper.service';
+import { fromEvent, tap, throttleTime } from 'rxjs';
 
 @Component({
   selector: 'app-settings-tab',
   templateUrl: 'settings-tab.page.html',
   styleUrls: ['settings-tab.page.scss']
 })
-export class SettingsTab implements OnInit {
+export class SettingsTab implements OnInit, AfterViewInit {
   students: string[] = [];
   subjects: string[] = [];
   courseTimeInputValue: string = this.courseTimeState.getValue();
   studentInputValue: string = '';
   subjectInputValue: string = '';
   studentsData: Student[] | null = null;
-  public actionSheetButtons: ActionSheetButton[] = [];
+  actionSheetButtons: ActionSheetButton[] = [];
+  isSubjectsAddButtonDisabled = false;
+  isStudentsAddButtonDisabled = false;
+  @ViewChild('addStudentsButton', { static: true, read: ElementRef }) addStudentsButton!: ElementRef;
+  @ViewChild('addSubjectsButton', { static: true, read: ElementRef }) addSubjectsButton!: ElementRef;
 
   constructor(
     private courseTimeState: CourseTimeInStringState,
@@ -63,6 +68,24 @@ export class SettingsTab implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    // Implementing throttling for double click prevention
+    // Also implemented disable button
+    fromEvent(this.addStudentsButton.nativeElement, 'click')
+      .pipe(
+        throttleTime(1000),
+        tap(() => this.addStudent())
+      )
+      .subscribe();
+
+    fromEvent(this.addSubjectsButton.nativeElement, 'click')
+      .pipe(
+        throttleTime(1000),
+        tap(() => this.addSubject())
+      )
+      .subscribe();
+  }
+
   async displayConfirmationModal(callbackFunction: any) {
     const alert = await this.alertController.create({
       header: 'تنبيه!',
@@ -91,28 +114,32 @@ export class SettingsTab implements OnInit {
 
   addStudent() {
     if (!this.studentInputValue.trim()) return;
+    this.isStudentsAddButtonDisabled = true;
 
     const previousState = this.studentsState.getValue();
     const isStudentExist = previousState ? previousState?.filter(x => x.name.includes(this.studentInputValue)).length > 0 : false;
 
     if (!isStudentExist) {
-      this.students.push(this.studentInputValue);
       this.saveStudentToState(this.studentInputValue);
-      this.studentInputValue = '';
     }
+
+    this.studentInputValue = '';
+    this.isStudentsAddButtonDisabled = false;
   }
 
   addSubject() {
     if (!this.subjectInputValue.trim()) return;
+    this.isSubjectsAddButtonDisabled = true;
 
     const previousState = this.subjectsState.getValue();
     const isSubjectExist = previousState !== null ? previousState?.filter(x => x.includes(this.subjectInputValue)).length > 0 : false;
 
     if (!isSubjectExist) {
-      this.subjects.push(this.subjectInputValue);
       this.saveSubjectToState(this.subjectInputValue);
-      this.subjectInputValue = '';
     }
+
+    this.subjectInputValue = '';
+    this.isSubjectsAddButtonDisabled = false;
   }
 
   saveSubjectToState(subjectName: string) {

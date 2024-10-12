@@ -31,7 +31,8 @@
       <ion-label position="floating">اضافة طالب</ion-label>
       <ion-input [(ngModel)]="studentInputValue" placeholder="ادخل اسم الطالب"></ion-input>
     </ion-item>
-    <ion-button style="margin-top: 20px;" expand="full" (click)="addStudent()">اضافة طالب</ion-button>
+    <ion-button #addStudentsButton class="add-students-btn" [disabled]="this.isStudentsAddButtonDisabled"
+      style="margin-top: 20px;" expand="full">اضافة طالب</ion-button>
     <ion-title>اسماء الطلاب المضافين</ion-title>
     <ion-item *ngFor="let student of students">
       {{ student }}
@@ -42,7 +43,8 @@
       <ion-label position="floating">اضافة مادة</ion-label>
       <ion-input [(ngModel)]="subjectInputValue" placeholder="ادخل اسم المادة"></ion-input>
     </ion-item>
-    <ion-button style="margin-top: 20px;" expand="full" (click)="addSubject()">اضافة مادة</ion-button>
+    <ion-button #addSubjectsButton class="add-subjects-btn" [disabled]="this.isSubjectsAddButtonDisabled"
+      style="margin-top: 20px;" expand="full">اضافة مادة</ion-button>
     <ion-title>اسماء المواد المضافة</ion-title>
     <ion-item *ngFor="let subject of subjects">
       {{ subject }}
