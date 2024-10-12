@@ -5,11 +5,11 @@ import { CourseTimeInStringState, Participated, StudentsState, SubjectsState } f
 import { IonInput, ToastController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-summary-tab',
+  templateUrl: 'summary-tab.page.html',
+  styleUrls: ['summary-tab.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class SummaryTab implements OnInit {
   messageToBeShared: string = '';
   subjectsChecklist: checklist[] = [];
   attendeesChecklist: checklist[] = [];
@@ -17,18 +17,18 @@ export class Tab1Page implements OnInit {
 
   constructor(private subjectsState: SubjectsState, private courseTimeState: CourseTimeInStringState, private studentsState: StudentsState, private toastController: ToastController) {
   }
-  
+
   ngOnInit(): void {
     this.subjectsState.getState().subscribe((internalSubjectState) => {
       if (internalSubjectState) {
         this.subjectsChecklist = [];
 
         internalSubjectState.forEach(subject => {
-          this.subjectsChecklist.push({ name: subject!.toString(), descriptions: [], checked: false})
+          this.subjectsChecklist.push({ name: subject!.toString(), descriptions: [], checked: false })
         });
       }
     });
-    
+
     this.studentsState.getState().subscribe((internalStudentsState) => {
       if (internalStudentsState) {
         this.attendeesChecklist = [];
@@ -39,8 +39,8 @@ export class Tab1Page implements OnInit {
           const todaysDateParticipation = student?.attendance?.find(x => x.date === todaysDate);
           const todaysDateMemorization = student?.memorization?.find(x => x.date === todaysDate);
 
-          this.attendeesChecklist.push({ name: student.name, checked: todaysDateParticipation ? todaysDateParticipation.hasParticipated : false})
-          this.memorizersChecklist.push({ name: student.name, checked: todaysDateMemorization ? todaysDateMemorization.hasParticipated : false})
+          this.attendeesChecklist.push({ name: student.name, checked: todaysDateParticipation ? todaysDateParticipation.hasParticipated : false })
+          this.memorizersChecklist.push({ name: student.name, checked: todaysDateMemorization ? todaysDateMemorization.hasParticipated : false })
         });
       }
     });
@@ -130,12 +130,12 @@ export class Tab1Page implements OnInit {
 
   generateMessageToBeShared() {
     const subjects = this.getSelectedSubjects();
-    
+
     let subjectText = '';
     if (subjects.length > 0) {
       let subjectsFormattedWithNumbering = '';
       subjects.forEach((subject, index) => {
-        subjectsFormattedWithNumbering = subjectsFormattedWithNumbering.concat(`         ${index+1}- ${subject.name} \n`)
+        subjectsFormattedWithNumbering = subjectsFormattedWithNumbering.concat(`         ${index + 1}- ${subject.name} \n`)
         subject.descriptions?.forEach((description) => {
           subjectsFormattedWithNumbering = subjectsFormattedWithNumbering.concat(`           ● ${description} \n`)
         });
@@ -148,12 +148,12 @@ ${subjectsFormattedWithNumbering}
 
 
     const memorizers = this.getSelectedMemorizers();
-    
+
     let memorizersText = '';
     if (memorizers.length > 0) {
       let memorizersFormattedWithNumbering = '';
       memorizers.forEach((memorizer, index) => {
-        memorizersFormattedWithNumbering = memorizersFormattedWithNumbering.concat(`         ${index+1}- ${memorizer} \n`)
+        memorizersFormattedWithNumbering = memorizersFormattedWithNumbering.concat(`         ${index + 1}- ${memorizer} \n`)
       });
 
       memorizersText = `🟢 مع التسميع, سمع كل من:
@@ -164,12 +164,12 @@ ${memorizersFormattedWithNumbering}
     }
 
     const attendees = this.getSelectedAttendees();
-    
+
     let attendeesText = '';
     if (attendees.length > 0) {
       let attendeesFormattedWithNumbering = '';
       attendees.forEach((attendee, index) => {
-        attendeesFormattedWithNumbering = attendeesFormattedWithNumbering.concat(`         ${index+1}- ${attendee} \n`)
+        attendeesFormattedWithNumbering = attendeesFormattedWithNumbering.concat(`         ${index + 1}- ${attendee} \n`)
       });
 
       attendeesText = `📒 الحضور:

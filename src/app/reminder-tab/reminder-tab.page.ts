@@ -6,26 +6,26 @@ import { Clipboard } from '@capacitor/clipboard';
 import { Share } from '@capacitor/share';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-reminder-tab',
+  templateUrl: 'reminder-tab.page.html',
+  styleUrls: ['reminder-tab.page.scss']
 })
-export class Tab2Page implements OnInit {
+export class ReminderTab implements OnInit {
   messageToBeShared: string = '';
   subjectsChecklist: checklist[] = [];
 
   constructor(private subjectsState: SubjectsState, private courseTimeState: CourseTimeInStringState, private toastController: ToastController) {
   }
-  
+
   ngOnInit(): void {
     this.subjectsState.getState().subscribe((internalSubjectState) => {
       if (internalSubjectState) {
         internalSubjectState.forEach(subject => {
-          this.subjectsChecklist.push({ name: subject!.toString(), checked: false})
+          this.subjectsChecklist.push({ name: subject!.toString(), checked: false })
         });
       }
     });
-    
+
     this.generateMessageToBeShared();
   }
 
@@ -40,12 +40,12 @@ export class Tab2Page implements OnInit {
 
   generateMessageToBeShared() {
     const subjects = this.getSelectedSubjects();
-    
+
     let subjectText = '';
     if (subjects.length > 0) {
       let subjectsFormattedWithNumbering = '';
       subjects.forEach((subject, index) => {
-        subjectsFormattedWithNumbering = subjectsFormattedWithNumbering.concat(`         ${index+1}- ${subject} \n`)
+        subjectsFormattedWithNumbering = subjectsFormattedWithNumbering.concat(`         ${index + 1}- ${subject} \n`)
       });
 
       subjectText = `📗 يرجى احضار الكتب الآتية:

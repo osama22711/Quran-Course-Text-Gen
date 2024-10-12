@@ -8,16 +8,16 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+        path: 'summary-tab',
+        loadChildren: () => import('../summary-tab/summary-tab.module').then(m => m.SummaryTabModule)
       },
       {
-        path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+        path: 'reminder-tab',
+        loadChildren: () => import('../reminder-tab/reminder-tab.module').then(m => m.ReminderTabModule)
       },
       {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        path: 'settings-tab',
+        loadChildren: () => import('../settings-tab/settings-tab.module').then(m => m.SettingsTabModule)
       },
       {
         path: '',
@@ -36,4 +36,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule { }
