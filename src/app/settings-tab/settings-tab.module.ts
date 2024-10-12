@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { SettingsTab } from './settings-tab.page';
 
 import { SettingsTabRoutingModule } from './settings-tab-routing.module';
+import { ExcelExporterService } from '../services/excel-exporter.service';
+import { HelperService } from '../services/helper.service';
 
 @NgModule({
   imports: [
@@ -14,6 +16,9 @@ import { SettingsTabRoutingModule } from './settings-tab-routing.module';
     SettingsTabRoutingModule
   ],
   declarations: [SettingsTab],
-  providers: []
+  providers: [
+    ExcelExporterService,
+    HelperService
+  ]
 })
 export class SettingsTabModule { }

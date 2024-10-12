@@ -4,6 +4,7 @@ import { SubjectsState, CourseTimeInStringState } from 'src/store/app-state.serv
 
 import { Clipboard } from '@capacitor/clipboard';
 import { Share } from '@capacitor/share';
+import { first, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-reminder-tab',
@@ -13,17 +14,35 @@ import { Share } from '@capacitor/share';
 export class ReminderTab implements OnInit {
   messageToBeShared: string = '';
   subjectsChecklist: checklist[] = [];
+  courseTime: string = '';
 
-  constructor(private subjectsState: SubjectsState, private courseTimeState: CourseTimeInStringState, private toastController: ToastController) {
-  }
+  constructor(
+    private subjectsState: SubjectsState,
+    private courseTimeState: CourseTimeInStringState,
+    private toastController: ToastController
+  ) { }
 
   ngOnInit(): void {
     this.subjectsState.getState().subscribe((internalSubjectState) => {
+      this.subjectsChecklist = [];
+
       if (internalSubjectState) {
         internalSubjectState.forEach(subject => {
           this.subjectsChecklist.push({ name: subject!.toString(), checked: false })
         });
       }
+
+      this.generateMessageToBeShared();
+    });
+
+    this.courseTimeState.getState().subscribe((courseTime: string) => {
+      this.courseTime = ''
+
+      if (courseTime) {
+        this.courseTime = courseTime;
+      }
+
+      this.generateMessageToBeShared();
     });
 
     this.generateMessageToBeShared();
@@ -53,7 +72,8 @@ ${subjectsFormattedWithNumbering}
       `
     }
 
-    const courseTime = this.courseTimeState.getValue();
+    const proposition = this.defineProposition(this.courseTime);
+    const courseTime = proposition ? `${proposition} ${this.courseTime}` : this.courseTime;
 
     const memorizationText = `${subjectText === '' ? 'يرجى تجهيز المحفوظات' : 'وتجهيز المحفوظات'}`
 
@@ -64,12 +84,25 @@ ${subjectsFormattedWithNumbering}
 
 اسعد الله اوقاتكم بكل خير 🎉
 
-يتجدد لقائنا اليوم عند ${courseTime} باذن الله
+يتجدد لقائنا اليوم ${courseTime} باذن الله
 
 ${subjectText}${memorizationText}
     `
 
     this.messageToBeShared = this.messageToBeShared.trim();
+  }
+
+  defineProposition(courseTime: string) {
+    let proposition = 'عند';
+    const firstWord = courseTime.split(' ')[0];
+
+    if (firstWord === 'صلاة') {
+      proposition = 'من';
+    } else if (firstWord === 'من' || firstWord === 'عند') {
+      return null;
+    }
+
+    return proposition;
   }
 
   async copyText() {

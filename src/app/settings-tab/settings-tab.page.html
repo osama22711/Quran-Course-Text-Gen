@@ -1,7 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      اعدادات الدورة
+      <ion-row>
+        <ion-col size="8" class="ion-align-self-center">
+          اعدادات الدورة
+        </ion-col>
+        <ion-col size="4" style="display: flex;" class="ion-justify-content-end">
+          <ion-icon name="settings" id="open-action-sheet"></ion-icon>
+          <ion-action-sheet trigger="open-action-sheet" header="الاعدادات" dir="rtl"
+            [buttons]="actionSheetButtons"></ion-action-sheet>
+        </ion-col>
+      </ion-row>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,13 +22,8 @@
   </ion-header>
   <ion-list>
     <ion-row>
-      <ion-col size="8">
-        <ion-input label="وقت الدورة" placeholder="الساعة السادسة والنصف الى صلاة المغرب"
-          [(ngModel)]="courseTimeInputValue" (ionInput)="onCourseTimeInput($event)"></ion-input>
-      </ion-col>
-      <ion-col size="4" style="display: flex;" class="ion-justify-content-end">
-        <ion-button [disabled]="!studentsData" (click)="exportStudentsDataToExcel()">تصدير الى اكسل</ion-button>
-      </ion-col>
+      <ion-input label="وقت الدورة" placeholder="الساعة السادسة والنصف الى صلاة المغرب"
+        [(ngModel)]="courseTimeInputValue" (ionInput)="onCourseTimeInput($event)"></ion-input>
     </ion-row>
   </ion-list>
   <ion-list>

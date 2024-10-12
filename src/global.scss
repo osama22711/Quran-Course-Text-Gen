@@ -117,3 +117,15 @@ h6 {
     font-family: 'Tajawal', sans-serif;
     font-weight: 700;
 }
+
+.actionSheetButtons-delete-student-files {
+    color: red !important;
+
+    ion-icon {
+        color: red !important;
+    }
+}
+
+.alertController-delete-students-files {
+    color: gray !important;
+}

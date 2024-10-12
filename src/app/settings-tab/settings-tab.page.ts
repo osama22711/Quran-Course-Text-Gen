@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CourseTimeInStringState, Student, StudentsState, SubjectsState } from 'src/store/app-state.service';
-import * as XLSX from 'xlsx';
-import { Directory, Filesystem } from '@capacitor/filesystem';
-import * as saveAs from 'file-saver';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { Platform } from '@ionic/angular';
+import { ActionSheetButton, AlertController, Platform } from '@ionic/angular';
+import { ExcelExporterService } from '../services/excel-exporter.service';
+import { HelperService } from '../services/helper.service';
 
 @Component({
   selector: 'app-settings-tab',
@@ -18,25 +16,77 @@ export class SettingsTab implements OnInit {
   studentInputValue: string = '';
   subjectInputValue: string = '';
   studentsData: Student[] | null = null;
+  public actionSheetButtons: ActionSheetButton[] = [];
 
-  constructor(private courseTimeState: CourseTimeInStringState, private studentsState: StudentsState, private subjectsState: SubjectsState, private platform: Platform, private fileOpener: FileOpener) { }
+  constructor(
+    private courseTimeState: CourseTimeInStringState,
+    private studentsState: StudentsState,
+    private subjectsState: SubjectsState,
+    private alertController: AlertController,
+    private excelExporterService: ExcelExporterService,
+    private helperService: HelperService
+  ) { }
 
   ngOnInit(): void {
     this.studentsState.getState().subscribe(studentsData => {
       this.studentsData = studentsData;
-    });
+      this.students = [];
 
-    this.studentsState.getState().subscribe((studentState) => {
-      if (studentState) {
-        this.students = studentState!.map(x => x.name);;
+      if (studentsData) {
+        this.students = studentsData!.map(x => x.name);
       }
+
+      this.actionSheetButtons = [
+        {
+          text: 'مسح ملفات الطلاب',
+          role: 'destructive',
+          handler: () => this.displayConfirmationModal(() => this.helperService.resetAllStates()),
+          cssClass: 'actionSheetButtons-delete-student-files',
+          icon: 'trash',
+          disabled: !this.studentsData
+        },
+        {
+          text: 'تصدير ملفات الطلاب الى ملف اكسل',
+          handler: () => this.excelExporterService.exportStudentsDataToExcel(this.studentsData),
+          disabled: !this.studentsData,
+          icon: 'download'
+        }
+      ]
     });
 
     this.subjectsState.getState().subscribe((subjectStateValue) => {
+      this.subjects = [];
+
       if (subjectStateValue) {
         this.subjects = subjectStateValue;
       }
     });
+  }
+
+  async displayConfirmationModal(callbackFunction: any) {
+    const alert = await this.alertController.create({
+      header: 'تنبيه!',
+      message: 'هل انت متأكد من القيام بالحذف؟',
+      buttons: [
+        {
+          text: 'اغلاق',
+          htmlAttributes: {
+            'aria-label': 'close',
+          },
+        },
+        {
+          text: 'حذف',
+          handler: async () => {
+            callbackFunction()
+            await alert.dismiss();
+          },
+          cssClass: 'alertController-delete-students-files'
+        },
+      ],
+    });
+
+    alert.dir = 'rtl'
+    await alert.present();
   }
 
   addStudent() {
@@ -91,204 +141,5 @@ export class SettingsTab implements OnInit {
     const value = event.target!.value;
 
     this.courseTimeState.setState(value);
-  }
-
-  async exportStudentsDataToExcel() {
-    if (!this.studentsData) return;
-
-    let topMemorizer = null;
-    let topAttendence = null;
-
-    const dates: string[] = [];
-    let topMemorizerCount = 0;
-    let topAttendenceCount = 0;
-    this.studentsData.forEach(person => {
-      person.attendance.forEach(record => {
-        if (!dates.includes(record.date)) {
-          dates.push(record.date)
-        }
-      });
-
-      const memorizeCount = person.memorization.reduce((count, record) => {
-        if (record.hasParticipated) {
-          return count + 1;
-        }
-        return count;
-      }, 0);
-
-      if (memorizeCount > topMemorizerCount) {
-        topMemorizerCount = memorizeCount;
-        topMemorizer = person.name;
-      }
-
-      const attendanceCount = person.attendance.reduce((count, record) => {
-        if (record.hasParticipated) {
-          return count + 1;
-        }
-        return count;
-      }, 0);
-
-      if (attendanceCount > topAttendenceCount) {
-        topAttendenceCount = attendanceCount;
-        topAttendence = person.name;
-      }
-    });
-
-    const sortedDates = dates.sort((a: string, b: string) => new Date(a).getTime() - new Date(b).getTime());
-
-    const sheetData: any[][] = [];
-
-    const header = ['الأسم'];
-    sortedDates.forEach(date => {
-      header.push(date);
-      header.push('');
-    });
-    sheetData.push(header);
-
-    const subheader = [''];
-    sortedDates.forEach(() => {
-      subheader.push('الحضور');
-      subheader.push('التسميع');
-    })
-    sheetData.push(subheader);
-
-    this.studentsData.forEach(person => {
-      const row = [person.name];
-
-      sortedDates.forEach(date => {
-        const attendanceRecord = person.attendance.find(record => record.date === date);
-        const attendance = attendanceRecord ? `${attendanceRecord.hasParticipated ? 'نعم' : 'لا'}` : 'لا';
-
-        const memorizationRecord = person.memorization.find(record => record.date === date);
-        const memorization = memorizationRecord ? `${memorizationRecord.hasParticipated ? 'نعم' : 'لا'}` : 'لا';
-
-        row.push(attendance);
-        row.push(memorization);
-      });
-
-      sheetData.push(row);
-    });
-
-    sheetData.push([]);
-
-    const courseDays = ['ايام الدورة'];
-    courseDays.push(`${dates.length}`);
-    sheetData.push(courseDays);
-
-    const topMemorizerRow = ['اكثر تسميع'];
-    topMemorizerRow.push(topMemorizer ? `${topMemorizer} سمع اكثر من ${topMemorizerCount}` : 'لا يوجد احد');
-    sheetData.push(topMemorizerRow);
-
-    const topAttendenceRow = ['اكثر حضور'];
-    topAttendenceRow.push(topAttendence ? `${topAttendence} حضر اكثر من ${topAttendenceCount}` : 'لا يوجد احد');
-    sheetData.push(topAttendenceRow);
-
-    const serialMemorizationRow = ['تسميع متتالي'];
-    const consecutiveMemorizer = this.getTopConsecutiveMemorizer(sortedDates);
-    serialMemorizationRow.push(`${consecutiveMemorizer?.name} سمع اكثر من ${consecutiveMemorizer.streak}`);
-    sheetData.push(serialMemorizationRow);
-
-    const serialAttendanceRow = ['حضور متتالي'];
-    const consecutiveAttendence = this.getTopConsecutiveAttendence(sortedDates);
-    serialAttendanceRow.push(`${consecutiveMemorizer?.name} حضر اكثر من ${consecutiveMemorizer.streak}`);
-    sheetData.push(serialAttendanceRow);
-
-
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance and Memorization');
-
-    const wbout: ArrayBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    // Convert ArrayBuffer to base64
-    const base64Data = this.arrayBufferToBase64(wbout);
-
-    // Define the file path and name
-    const fileName = 'ملفات الطلاب.xlsx';
-
-    if (this.platform.is('cordova')) {
-      try {
-        // Save file using Filesystem API
-        const savedFile = await Filesystem.writeFile({
-          path: fileName,
-          data: base64Data,
-          directory: Directory.Data,
-        });
-
-        await this.fileOpener.open(savedFile.uri, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      } catch (error) {
-        console.error('Error saving file', error);
-      }
-    } else {
-      const blob = new Blob([wbout], { type: 'application/octet-stream' });
-      saveAs(blob, fileName);
-    }
-  }
-
-  private arrayBufferToBase64(buffer: ArrayBuffer): string {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-  }
-
-  private getTopConsecutiveMemorizer(courseDays: string[]): any {
-    if (!this.studentsData) return null;
-
-    let topMemorizer = null;
-    let topMemorizerStreak = 0;
-
-    this.studentsData.forEach(student => {
-      let currentStreak = 0;
-
-      for (let i = 0; i < courseDays.length; i++) {
-        const participationDate = student.memorization.filter(x => x.date === courseDays[i]);
-        if (participationDate.length > 0 && participationDate[0].hasParticipated) {
-          currentStreak++;
-          if (currentStreak > topMemorizerStreak) {
-            topMemorizer = student.name;
-            topMemorizerStreak = currentStreak;
-          }
-        }
-      }
-    });
-
-    const returnedData = {
-      name: topMemorizer,
-      streak: topMemorizerStreak
-    }
-    return returnedData;
-  }
-
-  private getTopConsecutiveAttendence(courseDays: string[]): any {
-    if (!this.studentsData) return null;
-
-    let topAttendence = null;
-    let topAttendenceStreak = 0;
-
-    this.studentsData.forEach(student => {
-      let currentStreak = 0;
-
-      for (let i = 0; i < courseDays.length; i++) {
-        const participationDate = student.attendance.filter(x => x.date === courseDays[i]);
-        if (participationDate.length > 0 && participationDate[0].hasParticipated) {
-          currentStreak++;
-          if (currentStreak > topAttendenceStreak) {
-            topAttendence = student.name;
-            topAttendenceStreak = currentStreak;
-          }
-        }
-      }
-    });
-
-    const returnedData = {
-      name: topAttendence,
-      streak: topAttendenceStreak
-    }
-    return returnedData;
   }
 }

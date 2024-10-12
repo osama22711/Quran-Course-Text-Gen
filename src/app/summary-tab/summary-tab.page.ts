@@ -20,9 +20,9 @@ export class SummaryTab implements OnInit {
 
   ngOnInit(): void {
     this.subjectsState.getState().subscribe((internalSubjectState) => {
-      if (internalSubjectState) {
-        this.subjectsChecklist = [];
+      this.subjectsChecklist = [];
 
+      if (internalSubjectState) {
         internalSubjectState.forEach(subject => {
           this.subjectsChecklist.push({ name: subject!.toString(), descriptions: [], checked: false })
         });
@@ -30,10 +30,10 @@ export class SummaryTab implements OnInit {
     });
 
     this.studentsState.getState().subscribe((internalStudentsState) => {
-      if (internalStudentsState) {
-        this.attendeesChecklist = [];
-        this.memorizersChecklist = [];
+      this.attendeesChecklist = [];
+      this.memorizersChecklist = [];
 
+      if (internalStudentsState) {
         internalStudentsState.forEach(student => {
           const todaysDate = new Date().toLocaleDateString();
           const todaysDateParticipation = student?.attendance?.find(x => x.date === todaysDate);

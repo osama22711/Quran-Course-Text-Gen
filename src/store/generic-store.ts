@@ -3,18 +3,20 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class Store<T> {
   private state$: BehaviorSubject<T>;
   private localStorageKey: string;
+  private initialState: any;
 
   protected constructor(initialState: T, localStorageKey: string) {
-     // Setting the default state
-     this.localStorageKey = localStorageKey;
-     const localStorageState = localStorage.getItem(localStorageKey);
+    // Setting the default state
+    this.initialState = initialState;
+    this.localStorageKey = localStorageKey;
+    const localStorageState = localStorage.getItem(localStorageKey);
 
-     if (localStorageState) {
+    if (localStorageState) {
       this.state$ = new BehaviorSubject(JSON.parse(localStorageState));
-     } else {
-       localStorage.setItem(localStorageKey, JSON.stringify(initialState));
-       this.state$ = new BehaviorSubject(initialState);
-     }
+    } else {
+      localStorage.setItem(localStorageKey, JSON.stringify(initialState));
+      this.state$ = new BehaviorSubject(initialState);
+    }
   }
 
   getValue(): T {
@@ -30,4 +32,7 @@ export class Store<T> {
     this.state$.next(nextState);
   }
 
+  resetState(): void {
+    this.setState(this.initialState);
+  }
 }
