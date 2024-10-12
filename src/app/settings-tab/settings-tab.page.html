@@ -33,7 +33,7 @@
     </ion-item>
     <ion-button #addStudentsButton class="add-students-btn" [disabled]="this.isStudentsAddButtonDisabled"
       style="margin-top: 20px;" expand="full">اضافة طالب</ion-button>
-    <ion-title>اسماء الطلاب المضافين</ion-title>
+    <ion-title class="mt-30">اسماء الطلاب المضافين</ion-title>
     <ion-item *ngFor="let student of students">
       {{ student }}
     </ion-item>
@@ -45,7 +45,7 @@
     </ion-item>
     <ion-button #addSubjectsButton class="add-subjects-btn" [disabled]="this.isSubjectsAddButtonDisabled"
       style="margin-top: 20px;" expand="full">اضافة مادة</ion-button>
-    <ion-title>اسماء المواد المضافة</ion-title>
+    <ion-title class="mt-30">اسماء المواد المضافة</ion-title>
     <ion-item *ngFor="let subject of subjects">
       {{ subject }}
     </ion-item>
