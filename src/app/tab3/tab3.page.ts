@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CourseTimeInStringState, Student, StudentsState, SubjectsState } from 'src/store/app-state.service';
 import * as XLSX from 'xlsx';
+import { Directory, Filesystem } from '@capacitor/filesystem';
+import * as saveAs from 'file-saver';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +19,7 @@ export class Tab3Page implements OnInit {
   subjectInputValue: string = '';
   studentsData: Student[] | null = null;
 
-  constructor(private courseTimeState: CourseTimeInStringState, private studentsState: StudentsState, private subjectsState: SubjectsState) { }
+  constructor(private courseTimeState: CourseTimeInStringState, private studentsState: StudentsState, private subjectsState: SubjectsState, private platform: Platform, private fileOpener: FileOpener) { }
 
   ngOnInit(): void {
     this.studentsState.getState().subscribe(studentsData => {
@@ -89,7 +93,7 @@ export class Tab3Page implements OnInit {
     this.courseTimeState.setState(value);
   }
 
-  exportStudentsDataToExcel() {
+  async exportStudentsDataToExcel() {
     if (!this.studentsData) return;
 
     let topMemorizer = null;
@@ -195,10 +199,41 @@ export class Tab3Page implements OnInit {
 
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance and Memorization');
 
-    const filePath = 'output.xlsx';
-    XLSX.writeFile(workbook, filePath);
+    const wbout: ArrayBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    console.log(`Excel file has been created at ${filePath}`);
+    // Convert ArrayBuffer to base64
+    const base64Data = this.arrayBufferToBase64(wbout);
+
+    // Define the file path and name
+    const fileName = 'ملفات الطلاب.xlsx';
+
+    if (this.platform.is('cordova')) {
+      try {
+        // Save file using Filesystem API
+        const savedFile = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Data,
+        });
+
+        await this.fileOpener.open(savedFile.uri, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      } catch (error) {
+        console.error('Error saving file', error);
+      }
+    } else {
+      const blob = new Blob([wbout], { type: 'application/octet-stream' });
+      saveAs(blob, fileName);
+    }
+  }
+
+  private arrayBufferToBase64(buffer: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
   }
 
   private getTopConsecutiveMemorizer(courseDays: string[]): any {

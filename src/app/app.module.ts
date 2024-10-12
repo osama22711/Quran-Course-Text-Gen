@@ -7,6 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CourseTimeInStringState, StudentsState, SubjectsState } from 'src/store/app-state.service';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,8 +16,9 @@ import { CourseTimeInStringState, StudentsState, SubjectsState } from 'src/store
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     CourseTimeInStringState,
     StudentsState,
-    SubjectsState
+    SubjectsState,
+    FileOpener
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
