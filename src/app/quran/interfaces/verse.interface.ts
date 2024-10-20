@@ -16,6 +16,7 @@ export interface Verse {
     text_imlaei?: string;
     text_imlaei_simple?: string;
     text_indopak?: string;
+    qpc_uthmani_hafs: string;
     sajdah_number: null;
     sajdah_type: null;
     image_url?: string;
