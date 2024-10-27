@@ -1,65 +1,6 @@
 :host {
-    ::ng-deep {
-        .quran-container {
-            direction: rtl;
-            height: auto;
-            width: auto;
-            max-height: 1728px;
-            max-width: 1080px;
-            margin: auto 25px;
-            text-align: justify;
-            text-align-last: justify;
-            align-content: center;
-            overflow: hidden;
-            align-self: center;
-        }
-
-        .quran {
-            cursor: pointer;
-            font-family: 'QPCHafs';
-        }
-
-        .quran-line {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .quran-word {}
-
-        .verse-separator {
-            display: inline-flex;
-        }
-
-        .verse-word:hover {
-            background-color: #f7f7f7;
-            color: #2ca4ab;
-        }
-
-        .manual-hover {
-            background-color: #f7f7f7;
-            color: #2ca4ab;
-        }
-
-        .page-1_line-9 {
-            width: 70%;
-            place-self: center;
-        }
-
-        .page-1_line-10 {
-            width: 85%;
-            place-self: center;
-        }
-
-        .page-1_line-14,
-        .page-2_line-14 {
-            width: 75%;
-            place-self: center;
-        }
-
-        .page-1_line-15,
-        .page-2_line-15 {
-            width: 45%;
-            place-self: center;
-        }
+    owl-carousel-o {
+        height: 100%;
+        align-content: center;
     }
 }

@@ -1,4 +1,11 @@
-<div class="quran-container">
-  <div class="quran">
-  </div>
-</div>
+<owl-carousel-o [options]="sliderOptions" #swiper>
+  <ng-template carouselSlide>
+    <quran-page [Page]="PAGE_NUMBER"></quran-page>
+  </ng-template>
+  <ng-template carouselSlide>
+    <quran-page [Page]="PAGE_NUMBER+1"></quran-page>
+  </ng-template>
+  <ng-template carouselSlide>
+    <quran-page [Page]="PAGE_NUMBER+2"></quran-page>
+  </ng-template>
+</owl-carousel-o>

@@ -1,3 +1,4 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -11,7 +12,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, BrowserAnimationsModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     CourseTimeInStringState,

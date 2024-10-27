@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: 'quran',
-    component: QuranComponent
+    loadChildren: () => import('./quran/quran.module').then(m => m.QuranModule)
   }
 ];
 @NgModule({
