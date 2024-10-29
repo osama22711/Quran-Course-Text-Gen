@@ -101,6 +101,16 @@
     /* Black */
 }
 
+@font-face {
+    font-family: "surahnames";
+    src:
+        url("assets/fonts/surah_names/sura_names.woff2"),
+        url("assets/fonts/surah_names/sura_names.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 html {
     font-family: 'Tajawal', sans-serif;
     --ion-dynamic-font: var(--ion-default-dynamic-font);

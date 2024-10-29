@@ -10,7 +10,7 @@ export interface Word {
     code_v2?: string;
     page_number?: number;
     hizb_number?: number;
-    line_number?: number;
+    line_number: number;
     position: number;
     location?: string;
     id?: number;

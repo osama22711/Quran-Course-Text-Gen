@@ -17,7 +17,7 @@ export class QuranPageComponent implements OnInit {
   public verses: Verse[] = [];
   public ArabicPageNumber = '';
 
-  constructor(private helperService: HelperService, private renderer: Renderer2) { }
+  constructor(private el: ElementRef, private helperService: HelperService, private renderer: Renderer2) { }
 
   async ngOnInit() {
     const JUZ_NUMBER = 1;
@@ -26,6 +26,7 @@ export class QuranPageComponent implements OnInit {
 
     this.createQuranSkeleton();
     this.loadQuranFontDynamically(this.QURAN_FONT);
+    this.buildSurahNameAndBasmallah();
     this.buildQuranicPage();
     this.adjustHoverOnVerseSeparator();
     this.fitText();
@@ -80,6 +81,59 @@ export class QuranPageComponent implements OnInit {
     return combinedWords;
   }
 
+  private buildSurahNameAndBasmallah() {
+    const filledLineNumbers = this.getFilledLines(this.verses);
+    const missingLineNumbers = this.findMissingLineNumber(filledLineNumbers);
+
+    missingLineNumbers.forEach((missingLineNumber: number) => {
+      const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
+      const lineNumberDiv = document.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber}`);
+      const surahNameContainerElement = document.createElement('div');
+      surahNameContainerElement.classList.add('surah-name-container');
+      const surahNameImageElement = document.createElement('img');
+      surahNameImageElement.src = 'assets/surah_border.png';
+      surahNameImageElement.classList.add('surah-name');
+      surahNameContainerElement.appendChild(surahNameImageElement);
+      const style = this.renderer.createElement('style');
+      style.innerHTML = `
+        .surah-name-container::after {
+          content: "${this.verses[0].chapter_id?.toString().padStart(3, '0')}surah";
+        }
+      `;
+      this.renderer.appendChild(this.el.nativeElement, style);
+      lineNumberDiv?.appendChild(surahNameContainerElement);
+    });
+  }
+
+  private getFilledLines(verses: Verse[]): number[] {
+    const lines = new Set<number>();
+
+    verses.forEach(verse => {
+      verse.words.forEach(word => {
+        lines.add(word.line_number);
+      });
+    });
+
+    return Array.from(lines).sort((a, b) => a - b);
+  }
+
+  private findMissingLineNumber(filledLines: number[]): number[] {
+    const missingNumbers: number[] = [];
+    const maxNum = Math.max(...filledLines);
+
+    // Create a set for quick lookup
+    const numSet = new Set(filledLines);
+
+    // Start checking from 1 up to the maximum number
+    for (let i = 1; i <= maxNum; i++) {
+      if (!numSet.has(i)) {
+        missingNumbers.push(i);
+      }
+    }
+
+    return missingNumbers;
+  }
+
   private buildQuranicPage() {
     this.verses.forEach((verse: Verse) => {
       const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs)
@@ -88,6 +142,7 @@ export class QuranPageComponent implements OnInit {
       verse.words.forEach((word: Word) => {
         const wordLineNumber = word.line_number;
         const wordPageNumber = word.page_number;
+
         const lineNumberDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
 
         const quranicWord = quranicWords[quranicWordIndex];

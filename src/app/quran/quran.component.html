@@ -1,11 +1,8 @@
 <owl-carousel-o [options]="sliderOptions" #swiper>
+  <!-- <ng-template carouselSlide *ngFor="let page of pages; let i = index"> -->
+  <!-- <quran-page [Page]="i + 1"></quran-page> -->
+  <!-- </ng-template> -->
   <ng-template carouselSlide>
-    <quran-page [Page]="PAGE_NUMBER"></quran-page>
-  </ng-template>
-  <ng-template carouselSlide>
-    <quran-page [Page]="PAGE_NUMBER+1"></quran-page>
-  </ng-template>
-  <ng-template carouselSlide>
-    <quran-page [Page]="PAGE_NUMBER+2"></quran-page>
+    <quran-page [Page]="1"></quran-page>
   </ng-template>
 </owl-carousel-o>

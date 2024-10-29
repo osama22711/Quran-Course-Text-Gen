@@ -22,7 +22,7 @@
                 "audio_url": "wbw/001_001_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 9,
+                "line_number": 2,
                 "text": "بِسْمِ",
                 "translation": {
                     "text": "In (the) name",
@@ -41,7 +41,7 @@
                 "audio_url": "wbw/001_001_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 9,
+                "line_number": 2,
                 "text": "ٱللَّهِ",
                 "translation": {
                     "text": "(of) Allah",
@@ -60,7 +60,7 @@
                 "audio_url": "wbw/001_001_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 9,
+                "line_number": 2,
                 "text": "ٱلرَّحْمَـٰنِ",
                 "translation": {
                     "text": "the Most Gracious",
@@ -79,7 +79,7 @@
                 "audio_url": "wbw/001_001_004.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 9,
+                "line_number": 2,
                 "text": "ٱلرَّحِيمِ",
                 "translation": {
                     "text": "the Most Merciful",
@@ -98,7 +98,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 9,
+                "line_number": 2,
                 "text": "١",
                 "translation": {
                     "text": "(1)",
@@ -136,7 +136,7 @@
                 "audio_url": "wbw/001_002_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 10,
+                "line_number": 3,
                 "text": "ٱلْحَمْدُ",
                 "translation": {
                     "text": "All praises and thanks",
@@ -155,7 +155,7 @@
                 "audio_url": "wbw/001_002_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 10,
+                "line_number": 3,
                 "text": "لِلَّهِ",
                 "translation": {
                     "text": "(be) to Allah",
@@ -174,7 +174,7 @@
                 "audio_url": "wbw/001_002_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 10,
+                "line_number": 3,
                 "text": "رَبِّ",
                 "translation": {
                     "text": "the Lord",
@@ -193,7 +193,7 @@
                 "audio_url": "wbw/001_002_004.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 10,
+                "line_number": 3,
                 "text": "ٱلْعَـٰلَمِينَ",
                 "translation": {
                     "text": "of the universe",
@@ -212,7 +212,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 10,
+                "line_number": 3,
                 "text": "٢",
                 "translation": {
                     "text": "(2)",
@@ -250,7 +250,7 @@
                 "audio_url": "wbw/001_003_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "ٱلرَّحْمَـٰنِ",
                 "translation": {
                     "text": "The Most Gracious",
@@ -269,7 +269,7 @@
                 "audio_url": "wbw/001_003_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "ٱلرَّحِيمِ",
                 "translation": {
                     "text": "the Most Merciful",
@@ -288,7 +288,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "٣",
                 "translation": {
                     "text": "(3)",
@@ -326,7 +326,7 @@
                 "audio_url": "wbw/001_004_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "مَـٰلِكِ",
                 "translation": {
                     "text": "(The) Master",
@@ -345,7 +345,7 @@
                 "audio_url": "wbw/001_004_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "يَوْمِ",
                 "translation": {
                     "text": "(of the) Day",
@@ -364,7 +364,7 @@
                 "audio_url": "wbw/001_004_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "ٱلدِّينِ",
                 "translation": {
                     "text": "(of the) Judgment",
@@ -383,7 +383,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 11,
+                "line_number": 4,
                 "text": "٤",
                 "translation": {
                     "text": "(4)",
@@ -421,7 +421,7 @@
                 "audio_url": "wbw/001_005_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "إِيَّاكَ",
                 "translation": {
                     "text": "You Alone",
@@ -440,7 +440,7 @@
                 "audio_url": "wbw/001_005_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "نَعْبُدُ",
                 "translation": {
                     "text": "we worship",
@@ -459,7 +459,7 @@
                 "audio_url": "wbw/001_005_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "وَإِيَّاكَ",
                 "translation": {
                     "text": "and You Alone",
@@ -478,7 +478,7 @@
                 "audio_url": "wbw/001_005_004.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "نَسْتَعِينُ",
                 "translation": {
                     "text": "we ask for help",
@@ -497,7 +497,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "٥",
                 "translation": {
                     "text": "(5)",
@@ -535,7 +535,7 @@
                 "audio_url": "wbw/001_006_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 12,
+                "line_number": 5,
                 "text": "ٱهْدِنَا",
                 "translation": {
                     "text": "Guide us",
@@ -554,7 +554,7 @@
                 "audio_url": "wbw/001_006_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "ٱلصِّرَٰطَ",
                 "translation": {
                     "text": "(to) the path",
@@ -573,7 +573,7 @@
                 "audio_url": "wbw/001_006_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "ٱلْمُسْتَقِيمَ",
                 "translation": {
                     "text": "the straight",
@@ -592,7 +592,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "٦",
                 "translation": {
                     "text": "(6)",
@@ -630,7 +630,7 @@
                 "audio_url": "wbw/001_007_001.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "صِرَٰطَ",
                 "translation": {
                     "text": "(The) path",
@@ -649,7 +649,7 @@
                 "audio_url": "wbw/001_007_002.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "ٱلَّذِينَ",
                 "translation": {
                     "text": "(of) those",
@@ -668,7 +668,7 @@
                 "audio_url": "wbw/001_007_003.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 13,
+                "line_number": 6,
                 "text": "أَنْعَمْتَ",
                 "translation": {
                     "text": "You have bestowed (Your) Favors",
@@ -687,7 +687,7 @@
                 "audio_url": "wbw/001_007_004.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 14,
+                "line_number": 7,
                 "text": "عَلَيْهِمْ",
                 "translation": {
                     "text": "on them",
@@ -706,7 +706,7 @@
                 "audio_url": "wbw/001_007_005.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 14,
+                "line_number": 7,
                 "text": "غَيْرِ",
                 "translation": {
                     "text": "not (of)",
@@ -725,7 +725,7 @@
                 "audio_url": "wbw/001_007_006.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 14,
+                "line_number": 7,
                 "text": "ٱلْمَغْضُوبِ",
                 "translation": {
                     "text": "those who earned (Your) wrath",
@@ -744,7 +744,7 @@
                 "audio_url": "wbw/001_007_007.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 14,
+                "line_number": 7,
                 "text": "عَلَيْهِمْ",
                 "translation": {
                     "text": "on themselves",
@@ -763,7 +763,7 @@
                 "audio_url": "wbw/001_007_008.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 15,
+                "line_number": 8,
                 "text": "وَلَا",
                 "translation": {
                     "text": "and not",
@@ -782,7 +782,7 @@
                 "audio_url": "wbw/001_007_009.mp3",
                 "char_type_name": "word",
                 "page_number": 1,
-                "line_number": 15,
+                "line_number": 8,
                 "text": "ٱلضَّآلِّينَ",
                 "translation": {
                     "text": "(of) those who go astray",
@@ -801,7 +801,7 @@
                 "audio_url": null,
                 "char_type_name": "end",
                 "page_number": 1,
-                "line_number": 15,
+                "line_number": 8,
                 "text": "٧",
                 "translation": {
                     "text": "(7)",

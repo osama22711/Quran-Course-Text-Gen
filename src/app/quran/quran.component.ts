@@ -25,8 +25,9 @@ export class QuranComponent implements OnInit {
   }
 
   @ViewChild('swiper') carouselRef!: CarouselComponent;
-  @Input("Page") PAGE_NUMBER: number = 3;
+  @Input("Page") PAGE_NUMBER: number = 1;
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
+  public pages = Array.from({ length: 21 }, (_, i) => i + 1);
 
   constructor() { }
 
