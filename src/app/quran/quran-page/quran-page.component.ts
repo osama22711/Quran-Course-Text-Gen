@@ -51,7 +51,7 @@ export class QuranPageComponent implements OnInit {
     this.renderer.setStyle(this.quranContainerElement.nativeElement, 'height', `${containerHeight}px`);
     this.renderer.setStyle(this.quranContainerElement.nativeElement, 'width', `${containerWidth}px`);
 
-    const fontSize = (containerHeight / 1728) * 43;
+    const fontSize = (containerHeight / 1728) * 45;
     const lineHeight = fontSize * 1.75;
 
     this.renderer.setStyle(this.quranElement.nativeElement, 'lineHeight', `${lineHeight}px`);
