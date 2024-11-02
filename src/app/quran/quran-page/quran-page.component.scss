@@ -10,10 +10,11 @@
             margin: auto 25px;
             text-align: justify;
             text-align-last: justify;
-            align-content: center;
+            align-content: flex-start;
             overflow: hidden;
             align-self: center;
             position: relative;
+            place-self: center;
         }
 
         .page-number {
@@ -27,6 +28,7 @@
         .quran {
             cursor: pointer;
             font-family: 'QPCHafs';
+            margin-top: 35%;
         }
 
         .quran-line {
@@ -49,8 +51,22 @@
                 position: absolute;
                 right: 50%;
                 transform: translateX(50%);
-                top: 6%;
+                top: 7%;
             }
+        }
+
+        .verse-line-container {
+            display: contents;
+        }
+
+        .bismillah-container {
+            display: block;
+            width: 100%;
+            justify-items: center;
+        }
+
+        .bismillah {
+            width: 50% !important;
         }
 
         .quran-word {}
@@ -99,20 +115,20 @@
 
         // Page 2 - Albaqara
 
-        .page-2_line-10,
-        .page-2_line-11,
-        .page-2_line-12,
-        .page-2_line-13 {
+        .page-2_line-3,
+        .page-2_line-4,
+        .page-2_line-5,
+        .page-2_line-6 {
             width: 80%;
             justify-self: center;
         }
 
-        .page-2_line-14 {
+        .page-2_line-7 {
             width: 60%;
             place-self: center;
         }
 
-        .page-2_line-15 {
+        .page-2_line-8 {
             width: 35%;
             place-self: center;
         }

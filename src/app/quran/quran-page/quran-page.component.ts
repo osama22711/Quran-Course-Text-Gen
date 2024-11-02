@@ -62,6 +62,11 @@ export class QuranPageComponent implements OnInit {
     quranSeparators.forEach((separator: HTMLDivElement) => {
       this.renderer.setStyle(separator, 'fontSize', `${separatorFontSize}px`);
     });
+
+    const surahNameContainerElements = document.querySelectorAll('.surah-name-container') as NodeListOf<HTMLDivElement>;
+    surahNameContainerElements.forEach((surahNameContainerElement: HTMLDivElement) => {
+      this.renderer.setStyle(surahNameContainerElement, 'fontSize', `${separatorFontSize}px`);
+    });
   }
 
   private extractAndAdjustSpecialQuranicChars(quranicUthmaniHafsText: string) {
@@ -83,26 +88,58 @@ export class QuranPageComponent implements OnInit {
 
   private buildSurahNameAndBasmallah() {
     const filledLineNumbers = this.getFilledLines(this.verses);
-    const missingLineNumbers = this.findMissingLineNumber(filledLineNumbers);
+    let missingLineNumbers = this.findMissingLineNumber(filledLineNumbers);
 
-    missingLineNumbers.forEach((missingLineNumber: number) => {
-      const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
+    for (let i = 0; i < missingLineNumbers.length; i++) {
+      const missingLineNumber = missingLineNumbers[i];
+
       const lineNumberDiv = document.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber}`);
-      const surahNameContainerElement = document.createElement('div');
-      surahNameContainerElement.classList.add('surah-name-container');
-      const surahNameImageElement = document.createElement('img');
-      surahNameImageElement.src = 'assets/surah_border.png';
-      surahNameImageElement.classList.add('surah-name');
-      surahNameContainerElement.appendChild(surahNameImageElement);
-      const style = this.renderer.createElement('style');
-      style.innerHTML = `
-        .surah-name-container::after {
-          content: "${this.verses[0].chapter_id?.toString().padStart(3, '0')}surah";
+      const surahNameElement = this.buildSurahNameHTMLElement();
+      lineNumberDiv?.appendChild(surahNameElement);
+
+      missingLineNumbers = missingLineNumbers.slice(1);
+
+      const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
+      if (hasBismillah) {
+        const nextLineNumberDiv = document.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber + 1}`);
+        const bismillahElement = this.buildBismillahHTMLElement();
+        nextLineNumberDiv?.appendChild(bismillahElement);
+
+        missingLineNumbers = missingLineNumbers.slice(1);
+        i--;
+      }
+    }
+  }
+
+  private buildSurahNameHTMLElement(): HTMLElement {
+    const surahNameContainerElement = document.createElement('div');
+    surahNameContainerElement.classList.add('surah-name-container');
+    const surahNameImageElement = document.createElement('img');
+    surahNameImageElement.src = 'assets/surah_border.png';
+    surahNameImageElement.classList.add('surah-name');
+    surahNameContainerElement.appendChild(surahNameImageElement);
+    const style = this.renderer.createElement('style');
+    const surahNumber = this.verses[0].chapter_id?.toString().padStart(3, '0');
+    surahNameContainerElement.classList.add(`surah-name-container-${surahNumber}`);
+    style.innerHTML = `
+        .surah-name-container-${surahNumber}::after {
+          content: "${surahNumber}surah";
         }
       `;
-      this.renderer.appendChild(this.el.nativeElement, style);
-      lineNumberDiv?.appendChild(surahNameContainerElement);
-    });
+    this.renderer.appendChild(this.el.nativeElement, style);
+
+    return surahNameContainerElement;
+  }
+
+  private buildBismillahHTMLElement(): HTMLElement {
+    const bismillahContainerElement = document.createElement('div');
+    bismillahContainerElement.classList.add('bismillah-container');
+    const bismillahImageElement = document.createElement('img');
+    bismillahImageElement.src = 'assets/bismillah.svg';
+    bismillahImageElement.classList.add('bismillah');
+    bismillahContainerElement.appendChild(bismillahImageElement);
+
+    return bismillahContainerElement;
   }
 
   private getFilledLines(verses: Verse[]): number[] {
@@ -136,14 +173,22 @@ export class QuranPageComponent implements OnInit {
 
   private buildQuranicPage() {
     this.verses.forEach((verse: Verse) => {
-      const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs)
+      const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs);
+      const verseNumber = verse.verse_number;
+      const wordPageNumber = verse.page_number;
       let quranicWordIndex = 0;
 
       verse.words.forEach((word: Word) => {
         const wordLineNumber = word.line_number;
-        const wordPageNumber = word.page_number;
 
-        const lineNumberDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
+        const verseLineDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
+        let verseDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
+        if (verseDiv === null) {
+          verseDiv = document.createElement('div');
+          this.renderer.addClass(verseDiv, `page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
+          this.renderer.addClass(verseDiv, `verse-${verseNumber}`)
+          this.renderer.addClass(verseDiv, 'verse-line-container');
+        }
 
         const quranicWord = quranicWords[quranicWordIndex];
         const isWord = word.char_type_name === 'word';
@@ -153,14 +198,16 @@ export class QuranPageComponent implements OnInit {
           this.renderer.addClass(verseSeparator, 'verse-separator');
           this.renderer.setProperty(verseSeparator, 'innerHTML', `${quranicWord}`);
           this.renderer.setStyle(verseSeparator, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
-          lineNumberDiv?.appendChild(verseSeparator);
+          verseDiv?.appendChild(verseSeparator);
+          verseLineDiv?.appendChild(verseDiv);
         } else {
           const wordSpan = this.renderer.createElement('span');
           this.renderer.addClass(wordSpan, 'verse-word');
-          this.renderer.addClass(wordSpan, `verse-${verse.verse_number}`);
+          this.renderer.addClass(wordSpan, `verse-${verse.verse_number}_word-${word.id}`);
           this.renderer.setStyle(wordSpan, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
           this.renderer.setProperty(wordSpan, 'innerHTML', `${quranicWord}`);
-          lineNumberDiv?.appendChild(wordSpan);
+          verseDiv?.appendChild(wordSpan);
+          verseLineDiv?.appendChild(verseDiv);
           quranicWordIndex++;
         }
       });
@@ -182,18 +229,18 @@ export class QuranPageComponent implements OnInit {
     verseSeparators.forEach((verseSeparator: HTMLSpanElement) => {
       verseSeparator.onmouseenter = () => {
         const verseNumber = this.helperService.convertNumber(verseSeparator.innerHTML, 'toEnglish');
-        const verseWords = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
+        const verseDiv = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
 
-        verseWords.forEach((wordSpan: HTMLSpanElement) => {
+        verseDiv.forEach((wordSpan: HTMLSpanElement) => {
           this.renderer.addClass(wordSpan, 'manual-hover');
         });
       };
 
       verseSeparator.onmouseleave = () => {
         const verseNumber = this.helperService.convertNumber(verseSeparator.innerHTML, 'toEnglish');
-        const verseWords = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
+        const verseDiv = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
 
-        verseWords.forEach((wordSpan: HTMLSpanElement) => {
+        verseDiv.forEach((wordSpan: HTMLSpanElement) => {
           this.renderer.removeClass(wordSpan, 'manual-hover');
         });
       };

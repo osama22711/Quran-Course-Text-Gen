@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { QuranFont } from './interfaces/quran-font.enum';
-import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
+import { CarouselComponent, OwlOptions, ResponsiveSettings } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-quran',
@@ -12,7 +12,7 @@ export class QuranComponent implements OnInit {
   public sliderOptions: OwlOptions = {
     rtl: true,
     items: 1,
-    autoHeight: true,
+    autoHeight: false,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: false,
@@ -22,6 +22,11 @@ export class QuranComponent implements OnInit {
     animateIn: false,
     animateOut: false,
     rewind: false,
+    responsive: {
+      0: { items: 1 },
+      600: { items: 1 },
+      1000: { items: 1 }
+    }
   }
 
   @ViewChild('swiper') carouselRef!: CarouselComponent;
