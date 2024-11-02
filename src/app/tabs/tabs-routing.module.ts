@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('../settings-tab/settings-tab.module').then(m => m.SettingsTabModule)
       },
       {
+        path: 'quran-tab',
+        loadChildren: () => import('../quran/quran.module').then(m => m.QuranModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/summary-tab',
         pathMatch: 'full'
