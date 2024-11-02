@@ -40,7 +40,7 @@ export class QuranPageComponent implements OnInit {
   }
 
   private fitText() {
-    const quranSeparators = document.querySelectorAll('.verse-separator') as NodeListOf<HTMLDivElement>;
+    const quranSeparators = this.el.nativeElement.querySelectorAll('.verse-separator') as NodeListOf<HTMLDivElement>;
 
     const deviceHeight = window.innerHeight;
 
@@ -63,7 +63,7 @@ export class QuranPageComponent implements OnInit {
       this.renderer.setStyle(separator, 'fontSize', `${separatorFontSize}px`);
     });
 
-    const surahNameContainerElements = document.querySelectorAll('.surah-name-container') as NodeListOf<HTMLDivElement>;
+    const surahNameContainerElements = this.el.nativeElement.querySelectorAll('.surah-name-container') as NodeListOf<HTMLDivElement>;
     surahNameContainerElements.forEach((surahNameContainerElement: HTMLDivElement) => {
       this.renderer.setStyle(surahNameContainerElement, 'fontSize', `${separatorFontSize}px`);
     });
@@ -93,7 +93,7 @@ export class QuranPageComponent implements OnInit {
     for (let i = 0; i < missingLineNumbers.length; i++) {
       const missingLineNumber = missingLineNumbers[i];
 
-      const lineNumberDiv = document.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber}`);
+      const lineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber}`);
       const surahNameElement = this.buildSurahNameHTMLElement();
       lineNumberDiv?.appendChild(surahNameElement);
 
@@ -101,7 +101,7 @@ export class QuranPageComponent implements OnInit {
 
       const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
       if (hasBismillah) {
-        const nextLineNumberDiv = document.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber + 1}`);
+        const nextLineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber + 1}`);
         const bismillahElement = this.buildBismillahHTMLElement();
         nextLineNumberDiv?.appendChild(bismillahElement);
 
@@ -112,9 +112,9 @@ export class QuranPageComponent implements OnInit {
   }
 
   private buildSurahNameHTMLElement(): HTMLElement {
-    const surahNameContainerElement = document.createElement('div');
+    const surahNameContainerElement = this.renderer.createElement('div');
     surahNameContainerElement.classList.add('surah-name-container');
-    const surahNameImageElement = document.createElement('img');
+    const surahNameImageElement = this.renderer.createElement('img');
     surahNameImageElement.src = 'assets/surah_border.png';
     surahNameImageElement.classList.add('surah-name');
     surahNameContainerElement.appendChild(surahNameImageElement);
@@ -132,9 +132,9 @@ export class QuranPageComponent implements OnInit {
   }
 
   private buildBismillahHTMLElement(): HTMLElement {
-    const bismillahContainerElement = document.createElement('div');
+    const bismillahContainerElement = this.renderer.createElement('div');
     bismillahContainerElement.classList.add('bismillah-container');
-    const bismillahImageElement = document.createElement('img');
+    const bismillahImageElement = this.renderer.createElement('img');
     bismillahImageElement.src = 'assets/bismillah.svg';
     bismillahImageElement.classList.add('bismillah');
     bismillahContainerElement.appendChild(bismillahImageElement);
@@ -181,10 +181,10 @@ export class QuranPageComponent implements OnInit {
       verse.words.forEach((word: Word) => {
         const wordLineNumber = word.line_number;
 
-        const verseLineDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
-        let verseDiv = document.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
+        const verseLineDiv = this.el.nativeElement.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
+        let verseDiv = this.el.nativeElement.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
         if (verseDiv === null) {
-          verseDiv = document.createElement('div');
+          verseDiv = this.renderer.createElement('div');
           this.renderer.addClass(verseDiv, `page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
           this.renderer.addClass(verseDiv, `verse-${verseNumber}`)
           this.renderer.addClass(verseDiv, 'verse-line-container');
@@ -215,21 +215,24 @@ export class QuranPageComponent implements OnInit {
   }
 
   private createQuranSkeleton(lineNumberLayout = 15) {
+    if (this.quranElement.nativeElement.children.length > 0) return;
+
     for (let lineNumber = 1; lineNumber <= lineNumberLayout; lineNumber++) {
       const lineDiv = this.renderer.createElement('div');
       this.renderer.addClass(lineDiv, 'quran-line');
       this.renderer.addClass(lineDiv, `page-${this.PAGE_NUMBER}_line-${lineNumber}`);
+      this.quranElement.nativeElement.classList.add(`page-${this.PAGE_NUMBER}`)
       this.quranElement.nativeElement?.appendChild(lineDiv);
     }
   }
 
   private adjustHoverOnVerseSeparator() {
-    const verseSeparators: NodeListOf<HTMLSpanElement> = document.querySelectorAll('.verse-separator');
+    const verseSeparators: NodeListOf<HTMLSpanElement> = this.el.nativeElement.querySelectorAll('.verse-separator');
 
     verseSeparators.forEach((verseSeparator: HTMLSpanElement) => {
       verseSeparator.onmouseenter = () => {
         const verseNumber = this.helperService.convertNumber(verseSeparator.innerHTML, 'toEnglish');
-        const verseDiv = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
+        const verseDiv = this.el.nativeElement.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
 
         verseDiv.forEach((wordSpan: HTMLSpanElement) => {
           this.renderer.addClass(wordSpan, 'manual-hover');
@@ -238,7 +241,7 @@ export class QuranPageComponent implements OnInit {
 
       verseSeparator.onmouseleave = () => {
         const verseNumber = this.helperService.convertNumber(verseSeparator.innerHTML, 'toEnglish');
-        const verseDiv = document.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
+        const verseDiv = this.el.nativeElement.querySelectorAll(`.verse-${verseNumber}`) as NodeListOf<HTMLSpanElement>;
 
         verseDiv.forEach((wordSpan: HTMLSpanElement) => {
           this.renderer.removeClass(wordSpan, 'manual-hover');
@@ -263,7 +266,7 @@ export class QuranPageComponent implements OnInit {
       }
     `);
 
-    document.head.appendChild(style);
+    this.el.nativeElement.appendChild(style);
   }
 
   private async getQuranJuzVerses(juzNumber: number): Promise<Verse[]> {
