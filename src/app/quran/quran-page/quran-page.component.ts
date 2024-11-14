@@ -3,6 +3,8 @@ import { HelperService } from 'src/app/services/helper.service';
 import { QuranFont } from '../interfaces/quran-font.enum';
 import { Verse } from '../interfaces/verse.interface';
 import { Word } from '../interfaces/word.interface';
+import { GestureController, GestureDetail, PopoverController } from '@ionic/angular';
+import { NotePopoverComponent } from '../note-popover/note-popover.component';
 
 @Component({
   selector: 'quran-page',
@@ -16,8 +18,16 @@ export class QuranPageComponent implements OnInit {
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
   public verses: Verse[] = [];
   public ArabicPageNumber = '';
+  private longPressTimeout: any;
+  private longPressTimeoutTimeInMs = 500;
 
-  constructor(private el: ElementRef, private helperService: HelperService, private renderer: Renderer2) { }
+  constructor(
+    private el: ElementRef,
+    private helperService: HelperService,
+    private renderer: Renderer2,
+    private gestureCtrl: GestureController,
+    private popoverController: PopoverController
+  ) { }
 
   async ngOnInit() {
     const JUZ_NUMBER = 1;
@@ -198,6 +208,7 @@ export class QuranPageComponent implements OnInit {
           this.renderer.addClass(verseSeparator, 'verse-separator');
           this.renderer.setProperty(verseSeparator, 'innerHTML', `${quranicWord}`);
           this.renderer.setStyle(verseSeparator, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
+          this.createLongPressGesture(verseSeparator);
           verseDiv?.appendChild(verseSeparator);
           verseLineDiv?.appendChild(verseDiv);
         } else {
@@ -206,12 +217,46 @@ export class QuranPageComponent implements OnInit {
           this.renderer.addClass(wordSpan, `verse-${verse.verse_number}_word-${word.id}`);
           this.renderer.setStyle(wordSpan, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
           this.renderer.setProperty(wordSpan, 'innerHTML', `${quranicWord}`);
+          this.createLongPressGesture(wordSpan);
           verseDiv?.appendChild(wordSpan);
           verseLineDiv?.appendChild(verseDiv);
           quranicWordIndex++;
         }
       });
     });
+  }
+
+  private createLongPressGesture(htmlElement: Node) {
+    const gesture = this.gestureCtrl.create({
+      el: htmlElement,
+      threshold: 0,
+      gestureName: 'long-press',
+      onStart: (ev: GestureDetail) => {
+        this.longPressTimeout = setTimeout(() => {
+          this.handleLongPress(ev);
+        }, this.longPressTimeoutTimeInMs);
+      },
+      onMove: (ev: GestureDetail) => {
+      },
+      onEnd: (ev: GestureDetail) => {
+        clearTimeout(this.longPressTimeout);
+      }
+    });
+    gesture.enable(true);
+  }
+
+  private async handleLongPress(event: GestureDetail) {
+    const popover = await this.popoverController.create({
+      component: NotePopoverComponent,
+      event: event.event,
+      side: 'top',
+      alignment: 'center',
+      arrow: true,
+      cssClass: 'quran-note-popover',
+      showBackdrop: false,
+    });
+
+    await popover.present();
   }
 
   private createQuranSkeleton(lineNumberLayout = 15) {

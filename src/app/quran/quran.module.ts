@@ -5,13 +5,14 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
 import { QuranPageComponent } from './quran-page/quran-page.component';
+import { NotePopoverComponent } from './note-popover/note-popover.component';
 
 const routes: Routes = [
   { path: '', component: QuranComponent }
 ];
 
 @NgModule({
-  declarations: [QuranComponent, QuranPageComponent],
+  declarations: [QuranComponent, QuranPageComponent, NotePopoverComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
