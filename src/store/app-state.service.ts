@@ -1,31 +1,43 @@
 import { Store } from "./generic-store";
 
 export class CourseTimeInStringState extends Store<string> {
-    constructor() {
-      super("الساعة السادسة والنصف الى صلاة المغرب", "courseWhen");
-    }
+  constructor() {
+    super("الساعة السادسة والنصف الى صلاة المغرب", "courseWhen");
+  }
 }
 
 export class StudentsState extends Store<Student[] | null> {
-    constructor() {
-      super(null, "students");
-    }
+  constructor() {
+    super(null, "students");
+  }
 }
 
 export class SubjectsState extends Store<string[] | null> {
-    constructor() {
-      super(null, "subjects");
-    }
+  constructor() {
+    super(null, "subjects");
+  }
 }
 
 
 export interface Student {
-    name: string,
-    attendance: Participated[],
-    memorization: Participated[]
+  name: string,
+  attendance: Participated[],
+  memorization: Memorization[]
 }
 
 export interface Participated {
-    date: string,
-    hasParticipated: boolean
+  date: string,
+  hasParticipated: boolean
+}
+
+export interface Memorization {
+  date: string,
+  hasParticipated: boolean,
+  pages?: number[],
+  mistakes?: MemorizationMistake[]
+}
+
+export interface MemorizationMistake {
+  quranicWord: string,
+  note: string
 }

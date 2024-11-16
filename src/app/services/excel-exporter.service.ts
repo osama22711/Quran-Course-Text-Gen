@@ -4,7 +4,7 @@ import { Platform } from '@ionic/angular';
 import { Student } from 'src/store/app-state.service';
 import * as XLSX from 'xlsx';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import * as saveAs from 'file-saver';
+import saveAs from 'file-saver';
 
 @Injectable({
   providedIn: 'root'

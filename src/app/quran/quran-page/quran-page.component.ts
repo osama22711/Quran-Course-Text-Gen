@@ -1,9 +1,9 @@
-import { Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { HelperService } from 'src/app/services/helper.service';
 import { QuranFont } from '../interfaces/quran-font.enum';
 import { Verse } from '../interfaces/verse.interface';
 import { Word } from '../interfaces/word.interface';
-import { GestureController, GestureDetail, PopoverController } from '@ionic/angular';
+import { GestureController, GestureDetail, PopoverController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { NotePopoverComponent } from '../note-popover/note-popover.component';
 
 @Component({
@@ -11,12 +11,13 @@ import { NotePopoverComponent } from '../note-popover/note-popover.component';
   templateUrl: './quran-page.component.html',
   styleUrls: ['./quran-page.component.scss'],
 })
-export class QuranPageComponent implements OnInit {
-  @ViewChild('quran') quranElement!: ElementRef<HTMLElement>;
-  @ViewChild('quranContainer') quranContainerElement!: ElementRef<HTMLElement>;
+export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter, ViewDidEnter {
+  @ViewChild('quran', { static: true }) quranElement!: ElementRef<HTMLElement>;
+  @ViewChild('quranContainer', { static: true }) quranContainerElement!: ElementRef<HTMLElement>;
   @Input("Page") PAGE_NUMBER: number = 1;
+  @Input("PageVerses") PAGE_VERSES: Verse[] = [];
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
-  public verses: Verse[] = [];
+  @Output() quranLoadedEvent = new EventEmitter<number>();
   public ArabicPageNumber = '';
   private longPressTimeout: any;
   private longPressTimeoutTimeInMs = 500;
@@ -30,18 +31,23 @@ export class QuranPageComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    const JUZ_NUMBER = 1;
-    const data = await this.getQuranJuzVerses(JUZ_NUMBER);
-    this.verses = data.filter(x => x.page_number === this.PAGE_NUMBER);
-
     this.createQuranSkeleton();
     this.loadQuranFontDynamically(this.QURAN_FONT);
-    this.buildSurahNameAndBasmallah();
+    this.buildSurahNameAndBismallah();
+    this.ArabicPageNumber = this.helperService.convertNumber(this.PAGE_NUMBER.toString(), 'toArabic');
     this.buildQuranicPage();
     this.adjustHoverOnVerseSeparator();
     this.fitText();
+    this.quranLoadedEvent.emit(this.PAGE_NUMBER);
+  }
 
-    this.ArabicPageNumber = this.helperService.convertNumber(this.PAGE_NUMBER.toString(), 'toArabic');
+  ngAfterViewInit() {
+  }
+
+  async ionViewWillEnter() {
+  }
+
+  async ionViewDidEnter() {
   }
 
   @HostListener('window:resize', ['$event'])
@@ -96,14 +102,14 @@ export class QuranPageComponent implements OnInit {
     return combinedWords;
   }
 
-  private buildSurahNameAndBasmallah() {
-    const filledLineNumbers = this.getFilledLines(this.verses);
+  private buildSurahNameAndBismallah() {
+    const filledLineNumbers = this.getFilledLines(this.PAGE_VERSES);
     let missingLineNumbers = this.findMissingLineNumber(filledLineNumbers);
 
     for (let i = 0; i < missingLineNumbers.length; i++) {
       const missingLineNumber = missingLineNumbers[i];
 
-      const lineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber}`);
+      const lineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber}`);
       const surahNameElement = this.buildSurahNameHTMLElement();
       lineNumberDiv?.appendChild(surahNameElement);
 
@@ -111,7 +117,7 @@ export class QuranPageComponent implements OnInit {
 
       const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
       if (hasBismillah) {
-        const nextLineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.verses[0].page_number}_line-${missingLineNumber + 1}`);
+        const nextLineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber + 1}`);
         const bismillahElement = this.buildBismillahHTMLElement();
         nextLineNumberDiv?.appendChild(bismillahElement);
 
@@ -129,7 +135,7 @@ export class QuranPageComponent implements OnInit {
     surahNameImageElement.classList.add('surah-name');
     surahNameContainerElement.appendChild(surahNameImageElement);
     const style = this.renderer.createElement('style');
-    const surahNumber = this.verses[0].chapter_id?.toString().padStart(3, '0');
+    const surahNumber = this.PAGE_VERSES[0].chapter_id?.toString().padStart(3, '0');
     surahNameContainerElement.classList.add(`surah-name-container-${surahNumber}`);
     style.innerHTML = `
         .surah-name-container-${surahNumber}::after {
@@ -182,7 +188,7 @@ export class QuranPageComponent implements OnInit {
   }
 
   private buildQuranicPage() {
-    this.verses.forEach((verse: Verse) => {
+    this.PAGE_VERSES.forEach((verse: Verse) => {
       const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs);
       const verseNumber = verse.verse_number;
       const wordPageNumber = verse.page_number;
@@ -312,21 +318,5 @@ export class QuranPageComponent implements OnInit {
     `);
 
     this.el.nativeElement.appendChild(style);
-  }
-
-  private async getQuranJuzVerses(juzNumber: number): Promise<Verse[]> {
-    try {
-      const response = await fetch(`assets/quran_by_chapter/${juzNumber}.json`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to load file: ${response.statusText}`);
-      }
-
-      const data: Verse[] = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw new Error('Error loading or parsing the JSON file.');
-    }
   }
 }

@@ -7,6 +7,10 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
+  {
+    path: 'quran-tab',
+    loadChildren: () => import('./quran/quran.module').then(m => m.QuranModule)
+  },
 ];
 @NgModule({
   imports: [

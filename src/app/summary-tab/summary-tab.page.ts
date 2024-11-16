@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Share } from '@capacitor/share';
 import { Clipboard } from '@capacitor/clipboard';
-import { CourseTimeInStringState, Participated, StudentsState, SubjectsState } from 'src/store/app-state.service';
+import { CourseTimeInStringState, Memorization, Participated, StudentsState, SubjectsState } from 'src/store/app-state.service';
 import { IonInput, ToastController } from '@ionic/angular';
 
 @Component({
@@ -95,7 +95,7 @@ export class SummaryTab implements OnInit {
 
     const previousState = this.studentsState.getValue();
     const todaysDate = new Date().toLocaleDateString();
-    const participated: Participated = {
+    const memorization: Memorization = {
       date: todaysDate,
       hasParticipated: memorizer.checked
     }
@@ -106,7 +106,7 @@ export class SummaryTab implements OnInit {
       todaysDateParticipation!.hasParticipated = memorizer.checked;
       previousState!.find(x => x.name === memorizer.name)!.memorization = student!.memorization;
     } else {
-      previousState?.filter(x => x.name == memorizer.name)[0].memorization?.push(participated);
+      previousState?.filter(x => x.name == memorizer.name)[0].memorization?.push(memorization);
     }
 
     this.studentsState.setState(previousState);

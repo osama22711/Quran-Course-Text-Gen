@@ -1,13 +1,17 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { QuranFont } from './interfaces/quran-font.enum';
 import { CarouselComponent, OwlOptions, ResponsiveSettings } from 'ngx-owl-carousel-o';
+import { Student } from 'src/store/app-state.service';
+import * as CuzPageMapping from './mappings/cuz-to-pages.mapping.json';
+import { Verse } from './interfaces/verse.interface';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-quran',
   templateUrl: './quran.component.html',
   styleUrls: ['./quran.component.scss'],
 })
-export class QuranComponent implements AfterViewInit {
+export class QuranComponent implements AfterViewInit, OnInit {
 
   public sliderOptions: OwlOptions = {
     rtl: true,
@@ -21,6 +25,7 @@ export class QuranComponent implements AfterViewInit {
     nav: false,
     animateIn: false,
     animateOut: false,
+    lazyLoad: false,
     rewind: false,
     responsive: {
       0: { items: 1 },
@@ -30,15 +35,77 @@ export class QuranComponent implements AfterViewInit {
   }
 
   @ViewChild('swiper') carouselRef!: CarouselComponent;
-  @Input("PageFrom") FROM_PAGE_NUMBER: number = 1;
-  @Input("PageTo") TO_PAGE_NUMBER: number = 22;
+  @Input("Page") PAGE_NUMBER: number = 3;
+  @Input('JUZ') JUZ_NUMBER: number = 1;
+  @Input("Student") STUDENT: Student | null = null;
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
-  public pages = Array.from({ length: 1 }, (_, i) => i + 1);
+  public pages: number[] = [];
+  public juzVerses: Verse[] = [];
+  public isLoaded = false;
+  public loadedPages = 0;
 
-  constructor() { }
+  constructor(
+    private platform: Platform
+  ) {
+  }
 
-  ngAfterViewInit(): void {
-    const pagesLength = this.TO_PAGE_NUMBER - this.FROM_PAGE_NUMBER;
-    this.pages = Array.from({ length: pagesLength }, (_, i) => i + 1);
+  async ngOnInit() {
+    await this.platform.ready();
+    this.loadedPages = 0;
+    this.juzVerses = await this.getQuranJuzVerses(this.JUZ_NUMBER);
+    this.pages = this.getJuzPages();
+  }
+
+  async ngAfterViewInit() {
+    this.goToSlide(this.PAGE_NUMBER.toString());
+  }
+
+  public getPageVerses(pageNumber: number): Verse[] {
+    return this.juzVerses.filter(x => x.page_number === pageNumber);
+  }
+
+  quranLoadedEvent(pageNumber: number) {
+    if (this.isLoaded) return;
+
+    const requiredPagesToLoad = Math.floor(this.pages.length / 4);
+    this.loadedPages++;
+
+    if (this.loadedPages >= requiredPagesToLoad) {
+      this.isLoaded = true;
+    } else if (pageNumber === this.PAGE_NUMBER) {
+      this.isLoaded = true;
+    }
+  }
+
+  private async getQuranJuzVerses(juzNumber: number): Promise<Verse[]> {
+    try {
+      const response = await fetch(`assets/quran_by_chapter/${juzNumber}.json`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to load file: ${response.statusText}`);
+      }
+
+      const data: Verse[] = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error loading or parsing the JSON file.');
+    }
+  }
+
+  private goToSlide(index: string): void {
+    if (this.carouselRef) {
+      this.carouselRef.to(index);
+    } else {
+      console.error('Carousel component not initialized.');
+    }
+  }
+
+  private getJuzPages(): number[] {
+    const juzPagesArray = (CuzPageMapping as Record<string, number[]>)[this.JUZ_NUMBER.toString()];
+    if (!juzPagesArray) {
+      throw new Error(`Invalid Juz Number: ${this.JUZ_NUMBER}`);
+    }
+    return juzPagesArray;
   }
 }
