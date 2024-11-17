@@ -138,3 +138,12 @@ h6 {
 .alertController-delete-students-files {
     color: gray !important;
 }
+
+.loader-spinner {
+    --backdrop-opacity: 100%;
+    --background: white;
+
+    ion-backdrop {
+        background: white;
+    }
+}

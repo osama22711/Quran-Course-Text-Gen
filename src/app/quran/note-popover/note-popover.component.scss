@@ -1,0 +1,14 @@
+.popover-content {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep {
+    ion-modal {
+        --height: 40%;
+        --border-radius: 30px 30px 0px 0px;
+    }
+}

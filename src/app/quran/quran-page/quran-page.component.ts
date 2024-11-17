@@ -3,7 +3,7 @@ import { HelperService } from 'src/app/services/helper.service';
 import { QuranFont } from '../interfaces/quran-font.enum';
 import { Verse } from '../interfaces/verse.interface';
 import { Word } from '../interfaces/word.interface';
-import { GestureController, GestureDetail, PopoverController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
+import { GestureController, GestureDetail, ModalController, PopoverController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { NotePopoverComponent } from '../note-popover/note-popover.component';
 
 @Component({
@@ -27,7 +27,8 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     private helperService: HelperService,
     private renderer: Renderer2,
     private gestureCtrl: GestureController,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private modalController: ModalController
   ) { }
 
   async ngOnInit() {
@@ -252,17 +253,19 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
   }
 
   private async handleLongPress(event: GestureDetail) {
-    const popover = await this.popoverController.create({
-      component: NotePopoverComponent,
-      event: event.event,
-      side: 'top',
-      alignment: 'center',
-      arrow: true,
-      cssClass: 'quran-note-popover',
-      showBackdrop: false,
-    });
+    const modal = await this.modalController.create(
+      {
+        component: NotePopoverComponent,
+        backdropDismiss: true,
+        animated: true,
+        showBackdrop: true,
+        cssClass: 'quran-note-popover',
+        initialBreakpoint: 1,
+        breakpoints: [0, 1]
+      }
+    );
 
-    await popover.present();
+    modal.present();
   }
 
   private createQuranSkeleton(lineNumberLayout = 15) {

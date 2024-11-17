@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { QuranFont } from './interfaces/quran-font.enum';
 import { CarouselComponent, OwlOptions, ResponsiveSettings } from 'ngx-owl-carousel-o';
 import { Student } from 'src/store/app-state.service';
 import * as CuzPageMapping from './mappings/cuz-to-pages.mapping.json';
 import { Verse } from './interfaces/verse.interface';
 import { Platform } from '@ionic/angular';
+import { LoaderService } from '../services/loader.service';
 
 @Component({
   selector: 'app-quran',
@@ -43,14 +44,17 @@ export class QuranComponent implements AfterViewInit, OnInit {
   public juzVerses: Verse[] = [];
   public isLoaded = false;
   public loadedPages = 0;
+  private loader: HTMLIonLoadingElement | null = null;
 
   constructor(
-    private platform: Platform
+    private platform: Platform,
+    private loaderService: LoaderService
   ) {
   }
 
   async ngOnInit() {
     await this.platform.ready();
+    this.loader = await this.loaderService.presentLoadingSpinner(5000);
     this.loadedPages = 0;
     this.juzVerses = await this.getQuranJuzVerses(this.JUZ_NUMBER);
     this.pages = this.getJuzPages();
@@ -72,8 +76,14 @@ export class QuranComponent implements AfterViewInit, OnInit {
 
     if (this.loadedPages >= requiredPagesToLoad) {
       this.isLoaded = true;
+      setTimeout(() => {
+        this.loader!.dismiss();
+      }, 100);
     } else if (pageNumber === this.PAGE_NUMBER) {
       this.isLoaded = true;
+      setTimeout(() => {
+        this.loader!.dismiss();
+      }, 100);
     }
   }
 

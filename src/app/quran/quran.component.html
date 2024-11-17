@@ -1,4 +1,4 @@
-<owl-carousel-o [class.isNotLoaded]="!isLoaded" [options]="sliderOptions" #swiper>
+<owl-carousel-o [options]="sliderOptions" #swiper>
   <ng-template carouselSlide *ngFor="let pageNumber of pages">
     <quran-page [Page]="pageNumber" (quranLoadedEvent)="quranLoadedEvent($event)"
       [PageVerses]="this.getPageVerses(pageNumber)"></quran-page>

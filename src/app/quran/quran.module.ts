@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
 import { QuranPageComponent } from './quran-page/quran-page.component';
 import { NotePopoverComponent } from './note-popover/note-popover.component';
+import { LoaderService } from '../services/loader.service';
 
 const routes: Routes = [
   { path: '', component: QuranComponent }
@@ -20,6 +21,7 @@ const routes: Routes = [
     CarouselModule,
     RouterModule.forChild(routes)
   ],
+  providers: [LoaderService],
   exports: [QuranComponent]
 })
 export class QuranModule { }
