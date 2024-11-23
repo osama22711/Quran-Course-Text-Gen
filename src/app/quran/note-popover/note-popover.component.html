@@ -3,7 +3,10 @@
         <ion-buttons slot="start">
             <ion-button class="save-btn" [disabled]="quranicNoteForm.invalid">حفظ</ion-button>
         </ion-buttons>
-        <ion-title>اكتب ملاحظة عن {{noteHeader}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismissModal()" color="danger">الغاء</ion-button>
+        </ion-buttons>
+        <ion-title [innerHTML]="noteHeader"></ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content class="popover-content ion-padding" [formGroup]="quranicNoteForm">

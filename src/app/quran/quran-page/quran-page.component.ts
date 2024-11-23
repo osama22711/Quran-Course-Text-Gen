@@ -6,6 +6,8 @@ import { Word } from '../interfaces/word.interface';
 import { GestureController, GestureDetail, ModalController, PopoverController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { NotePopoverComponent } from '../note-popover/note-popover.component';
 import * as PageToChapterMapping from '../mappings/page-to-chapter.mappings.json';
+import * as ChaptersMapping from '../mappings/chapters.mappings.json';
+import Chapter from '../interfaces/Chapter';
 
 @Component({
   selector: 'quran-page',
@@ -214,10 +216,13 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
       const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs);
       const verseNumber = verse.verse_number;
       const wordPageNumber = verse.page_number;
+      const chapterId = verse!.chapter_id!.toString();
+      const surahName = (ChaptersMapping as any as Record<string, Chapter>)[chapterId].translatedName;
       let quranicWordIndex = 0;
       const originalWordsArray = verse.text_imlaei_simple!.split(' ');
 
       verse.words.forEach((word: Word) => {
+        let noteHeader = `سورة ${surahName} - الآية ${verseNumber}`;
         const wordLineNumber = word.line_number;
 
         const verseLineDiv = this.el.nativeElement.querySelector(`.page-${wordPageNumber}_line-${wordLineNumber}`);
@@ -239,7 +244,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
           this.renderer.addClass(verseSeparator, `page-${wordPageNumber}_verse-${verse.verse_number}`);
           this.renderer.setProperty(verseSeparator, 'innerHTML', `${quranicWord}`);
           this.renderer.setStyle(verseSeparator, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
-          this.createLongPressGesture(verseSeparator);
+          this.createLongPressGesture(verseSeparator, noteHeader);
           verseDiv?.appendChild(verseSeparator);
           verseLineDiv?.appendChild(verseDiv);
         } else {
@@ -249,7 +254,8 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
           this.renderer.setStyle(wordSpan, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
           this.renderer.setProperty(wordSpan, 'innerHTML', `${quranicWord}`);
           this.renderer.setAttribute(wordSpan, 'data-original', `${originalWordsArray[quranicWordIndex]}`);
-          this.createLongPressGesture(wordSpan);
+          noteHeader = `${noteHeader} - كلمة ${originalWordsArray[quranicWordIndex]}`
+          this.createLongPressGesture(wordSpan, noteHeader);
           verseDiv?.appendChild(wordSpan);
           verseLineDiv?.appendChild(verseDiv);
           quranicWordIndex++;
@@ -258,14 +264,14 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     });
   }
 
-  private createLongPressGesture(htmlElement: HTMLElement) {
+  private createLongPressGesture(htmlElement: HTMLElement, noteHeader: string) {
     const gesture = this.gestureCtrl.create({
       el: htmlElement,
       threshold: 0,
       gestureName: 'long-press',
       onStart: (ev: GestureDetail) => {
         this.longPressTimeout = setTimeout(() => {
-          this.handleLongPress(htmlElement);
+          this.handleLongPress(htmlElement, noteHeader);
         }, this.longPressTimeoutTimeInMs);
       },
       onMove: (ev: GestureDetail) => {
@@ -277,7 +283,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     gesture.enable(true);
   }
 
-  private async handleLongPress(htmlElement: HTMLElement) {
+  private async handleLongPress(htmlElement: HTMLElement, noteHeader: string) {
     const modal = await this.modalController.create(
       {
         component: NotePopoverComponent,
@@ -295,8 +301,6 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     const noteIdentifier = classes.find(
       (cls) => cls !== 'verse-word' && cls !== 'verse-separator'
     );
-
-    const noteHeader = isWord ? `كلمة ${htmlElement.attributes.getNamedItem("data-original")?.value}` : `الآية ${htmlElement.textContent}`;
 
     modal.componentProps = {
       isWord,
