@@ -5,6 +5,7 @@ import { Verse } from '../interfaces/verse.interface';
 import { Word } from '../interfaces/word.interface';
 import { GestureController, GestureDetail, ModalController, PopoverController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { NotePopoverComponent } from '../note-popover/note-popover.component';
+import * as PageToChapterMapping from '../mappings/page-to-chapter.mappings.json';
 
 @Component({
   selector: 'quran-page',
@@ -21,17 +22,19 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
   public ArabicPageNumber = '';
   private longPressTimeout: any;
   private longPressTimeoutTimeInMs = 500;
+  private surahsInCurrentPage: string[] = [];
+  private renderedSurahsInCurrentPage = 0;
 
   constructor(
     private el: ElementRef,
     private helperService: HelperService,
     private renderer: Renderer2,
     private gestureCtrl: GestureController,
-    private popoverController: PopoverController,
     private modalController: ModalController
   ) { }
 
   async ngOnInit() {
+    this.surahsInCurrentPage = (PageToChapterMapping as Record<string, string[]>)[this.PAGE_NUMBER];
     this.createQuranSkeleton();
     this.loadQuranFontDynamically(this.QURAN_FONT);
     this.buildSurahNameAndBismallah();
@@ -106,20 +109,31 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
   private buildSurahNameAndBismallah() {
     const filledLineNumbers = this.getFilledLines(this.PAGE_VERSES);
     let missingLineNumbers = this.findMissingLineNumber(filledLineNumbers);
+    const previousPage = window.document.querySelector(`.page-${this.PAGE_VERSES[0].page_number - 1}`) as HTMLDivElement;
+    const isSurahNameLastLineInPreviousPage = previousPage?.children.item(14)?.children[0]?.classList.contains('surah-name-container');
 
     for (let i = 0; i < missingLineNumbers.length; i++) {
       const missingLineNumber = missingLineNumbers[i];
 
-      const lineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber}`);
-      const surahNameElement = this.buildSurahNameHTMLElement();
-      lineNumberDiv?.appendChild(surahNameElement);
+      const lineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber}`) as HTMLDivElement;
 
+      if (isSurahNameLastLineInPreviousPage) {
+        const bismillahElement = this.buildBismillahHTMLElement();
+        lineNumberDiv?.appendChild(bismillahElement);
+        missingLineNumbers = missingLineNumbers.slice(1);
+        continue;
+      }
+
+      const surahNameElement = this.buildSurahNameHTMLElement(missingLineNumber);
+      if (!surahNameElement) continue;
+
+      lineNumberDiv?.appendChild(surahNameElement);
       missingLineNumbers = missingLineNumbers.slice(1);
 
-      const hasBismillah = missingLineNumbers.includes(missingLineNumber + 1);
-      if (hasBismillah) {
-        const nextLineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber + 1}`);
+      const hasBismillahAfterwards = missingLineNumbers.includes(missingLineNumber + 1);
+      if (hasBismillahAfterwards) {
         const bismillahElement = this.buildBismillahHTMLElement();
+        const nextLineNumberDiv = this.el.nativeElement.querySelector(`.page-${this.PAGE_VERSES[0].page_number}_line-${missingLineNumber + 1}`);
         nextLineNumberDiv?.appendChild(bismillahElement);
 
         missingLineNumbers = missingLineNumbers.slice(1);
@@ -128,7 +142,9 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     }
   }
 
-  private buildSurahNameHTMLElement(): HTMLElement {
+  private buildSurahNameHTMLElement(verseLine: number, lineNumberLayout = 15): HTMLElement | void {
+    if (this.renderedSurahsInCurrentPage >= this.surahsInCurrentPage.length) return;
+
     const surahNameContainerElement = this.renderer.createElement('div');
     surahNameContainerElement.classList.add('surah-name-container');
     const surahNameImageElement = this.renderer.createElement('img');
@@ -136,7 +152,11 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     surahNameImageElement.classList.add('surah-name');
     surahNameContainerElement.appendChild(surahNameImageElement);
     const style = this.renderer.createElement('style');
-    const surahNumber = this.PAGE_VERSES[0].chapter_id?.toString().padStart(3, '0');
+    let surahNumber = this.surahsInCurrentPage[this.renderedSurahsInCurrentPage];
+    if (verseLine === lineNumberLayout) {
+      surahNumber = (Number(surahNumber) + 1).toString();
+    }
+    surahNumber = surahNumber.padStart(3, '0');
     surahNameContainerElement.classList.add(`surah-name-container-${surahNumber}`);
     style.innerHTML = `
         .surah-name-container-${surahNumber}::after {
@@ -144,6 +164,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
         }
       `;
     this.renderer.appendChild(this.el.nativeElement, style);
+    this.renderedSurahsInCurrentPage++;
 
     return surahNameContainerElement;
   }
@@ -164,21 +185,21 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
 
     verses.forEach(verse => {
       verse.words.forEach(word => {
-        lines.add(word.line_number);
+        if (!lines.has(word.line_number)) {
+          lines.add(word.line_number);
+        }
       });
     });
 
     return Array.from(lines).sort((a, b) => a - b);
   }
 
-  private findMissingLineNumber(filledLines: number[]): number[] {
+  private findMissingLineNumber(filledLines: number[], lineNumberLayout = 15): number[] {
     const missingNumbers: number[] = [];
-    const maxNum = Math.max(...filledLines);
+    const maxNum = Math.max(lineNumberLayout);
 
-    // Create a set for quick lookup
     const numSet = new Set(filledLines);
 
-    // Start checking from 1 up to the maximum number
     for (let i = 1; i <= maxNum; i++) {
       if (!numSet.has(i)) {
         missingNumbers.push(i);
@@ -189,7 +210,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
   }
 
   private buildQuranicPage() {
-    this.PAGE_VERSES.forEach((verse: Verse) => {
+    this.PAGE_VERSES.forEach((verse: Verse, verseOrder: number) => {
       const quranicWords = this.extractAndAdjustSpecialQuranicChars(verse.qpc_uthmani_hafs);
       const verseNumber = verse.verse_number;
       const wordPageNumber = verse.page_number;
@@ -204,7 +225,8 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
         if (verseDiv === null) {
           verseDiv = this.renderer.createElement('div');
           this.renderer.addClass(verseDiv, `page-${wordPageNumber}_line-${wordLineNumber}_verse-${verseNumber}`);
-          this.renderer.addClass(verseDiv, `verse-${verseNumber}`)
+          this.renderer.addClass(verseDiv, `verse-${verseNumber}`);
+          this.renderer.addClass(verseDiv, `verse-order-${verseOrder}`);
           this.renderer.addClass(verseDiv, 'verse-line-container');
         }
 
@@ -273,6 +295,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     const noteIdentifier = classes.find(
       (cls) => cls !== 'verse-word' && cls !== 'verse-separator'
     );
+
     const noteHeader = isWord ? `كلمة ${htmlElement.attributes.getNamedItem("data-original")?.value}` : `الآية ${htmlElement.textContent}`;
 
     modal.componentProps = {

@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { QuranFont } from './interfaces/quran-font.enum';
 import { CarouselComponent, OwlOptions, ResponsiveSettings } from 'ngx-owl-carousel-o';
-import * as CuzPageMapping from './mappings/cuz-to-pages.mapping.json';
+import * as CuzPageMapping from './mappings/cuz-to-pages.mappings.json';
 import { Verse } from './interfaces/verse.interface';
 import { Platform } from '@ionic/angular';
 import { LoaderService } from '../services/loader.service';
@@ -36,8 +36,8 @@ export class QuranComponent implements AfterViewInit, OnInit {
   }
 
   @ViewChild('swiper') carouselRef!: CarouselComponent;
-  @Input("Page") PAGE_NUMBER: number = 601;
-  @Input('JUZ') JUZ_NUMBER: number = 30;
+  @Input("Page") PAGE_NUMBER: number = 604;
+  @Input('Juz') JUZ_NUMBER: number = 30;
   @Input("Student") STUDENT: Student | null = null;
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
   public pages: number[] = [];

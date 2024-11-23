@@ -37,13 +37,20 @@
         }
 
         .surah-name {
-            margin-bottom: 25px;
             filter: contrast(0.5);
         }
 
         .surah-name-container {
             position: relative;
             font-family: 'surahnames';
+            height: 40px;
+            width: 100%;
+            place-content: center;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
 
             &::after {
                 direction: rtl;
@@ -51,7 +58,7 @@
                 position: absolute;
                 right: 50%;
                 transform: translateX(50%);
-                top: 7%;
+                top: 5%;
             }
         }
 
@@ -61,6 +68,7 @@
 
         .bismillah-container {
             display: block;
+            height: 40px;
             width: 100%;
             justify-items: center;
         }
@@ -130,6 +138,46 @@
 
         .page-2_line-8 {
             width: 35%;
+            place-self: center;
+        }
+
+        .page-602_line-5 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-602_line-15 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-603_line-10 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-603_line-15 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-604_line-4 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-604_line-9 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-604_line-14 {
+            width: 65%;
+            place-self: center;
+        }
+
+        .page-604_line-15 {
+            width: 50%;
             place-self: center;
         }
     }
