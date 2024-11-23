@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CourseTimeInStringState, Student, StudentsState, SubjectsState } from 'src/store/app-state.service';
+import { CourseTimeInStringState, StudentsState, SubjectsState } from 'src/store/app-state.service';
 import { ActionSheetButton, AlertController } from '@ionic/angular';
 import { ExcelExporterService } from '../services/excel-exporter.service';
 import { HelperService } from '../services/helper.service';
 import { fromEvent, tap, throttleTime } from 'rxjs';
+import { Student } from 'src/store/interfaces/student.interface';
 
 @Component({
   selector: 'app-settings-tab',

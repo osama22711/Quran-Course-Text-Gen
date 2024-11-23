@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Share } from '@capacitor/share';
 import { Clipboard } from '@capacitor/clipboard';
-import { CourseTimeInStringState, Memorization, Participated, StudentsState, SubjectsState } from 'src/store/app-state.service';
+import { CourseTimeInStringState, StudentsState, SubjectsState } from 'src/store/app-state.service';
 import { IonInput, ToastController } from '@ionic/angular';
+import { Participated } from 'src/store/interfaces/participation.interface';
+import { Memorization } from 'src/store/interfaces/memorization.interface';
 
 @Component({
   selector: 'app-summary-tab',

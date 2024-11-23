@@ -1,11 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { QuranFont } from './interfaces/quran-font.enum';
 import { CarouselComponent, OwlOptions, ResponsiveSettings } from 'ngx-owl-carousel-o';
-import { Student } from 'src/store/app-state.service';
 import * as CuzPageMapping from './mappings/cuz-to-pages.mapping.json';
 import { Verse } from './interfaces/verse.interface';
 import { Platform } from '@ionic/angular';
 import { LoaderService } from '../services/loader.service';
+import { Student } from 'src/store/interfaces/student.interface';
 
 @Component({
   selector: 'app-quran',
@@ -21,7 +21,7 @@ export class QuranComponent implements AfterViewInit, OnInit {
     mouseDrag: true,
     touchDrag: true,
     pullDrag: false,
-    loop: false,
+    loop: true,
     dots: false,
     nav: false,
     animateIn: false,
@@ -36,8 +36,8 @@ export class QuranComponent implements AfterViewInit, OnInit {
   }
 
   @ViewChild('swiper') carouselRef!: CarouselComponent;
-  @Input("Page") PAGE_NUMBER: number = 3;
-  @Input('JUZ') JUZ_NUMBER: number = 1;
+  @Input("Page") PAGE_NUMBER: number = 601;
+  @Input('JUZ') JUZ_NUMBER: number = 30;
   @Input("Student") STUDENT: Student | null = null;
   @Input("Font") QURAN_FONT: QuranFont = QuranFont.QPCHafs;
   public pages: number[] = [];
@@ -61,7 +61,7 @@ export class QuranComponent implements AfterViewInit, OnInit {
   }
 
   async ngAfterViewInit() {
-    this.goToSlide(this.PAGE_NUMBER.toString());
+    this.sliderOptions = { ...this.sliderOptions, loop: false }
   }
 
   public getPageVerses(pageNumber: number): Verse[] {
@@ -74,14 +74,10 @@ export class QuranComponent implements AfterViewInit, OnInit {
     const requiredPagesToLoad = Math.floor(this.pages.length / 4);
     this.loadedPages++;
 
-    if (this.loadedPages >= requiredPagesToLoad) {
+    if ((this.loadedPages >= requiredPagesToLoad) || (pageNumber === this.PAGE_NUMBER)) {
       this.isLoaded = true;
       setTimeout(() => {
-        this.loader!.dismiss();
-      }, 100);
-    } else if (pageNumber === this.PAGE_NUMBER) {
-      this.isLoaded = true;
-      setTimeout(() => {
+        this.goToSlide(this.PAGE_NUMBER.toString());
         this.loader!.dismiss();
       }, 100);
     }

@@ -194,6 +194,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
       const verseNumber = verse.verse_number;
       const wordPageNumber = verse.page_number;
       let quranicWordIndex = 0;
+      const originalWordsArray = verse.text_imlaei_simple!.split(' ');
 
       verse.words.forEach((word: Word) => {
         const wordLineNumber = word.line_number;
@@ -213,6 +214,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
         if (!isWord) {
           const verseSeparator = this.renderer.createElement('span');
           this.renderer.addClass(verseSeparator, 'verse-separator');
+          this.renderer.addClass(verseSeparator, `page-${wordPageNumber}_verse-${verse.verse_number}`);
           this.renderer.setProperty(verseSeparator, 'innerHTML', `${quranicWord}`);
           this.renderer.setStyle(verseSeparator, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
           this.createLongPressGesture(verseSeparator);
@@ -221,9 +223,10 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
         } else {
           const wordSpan = this.renderer.createElement('span');
           this.renderer.addClass(wordSpan, 'verse-word');
-          this.renderer.addClass(wordSpan, `verse-${verse.verse_number}_word-${word.id}`);
+          this.renderer.addClass(wordSpan, `page-${wordPageNumber}_verse-${verse.verse_number}_word-${word.position}`);
           this.renderer.setStyle(wordSpan, 'fontFamily', this.QURAN_FONT === QuranFont.QPCHafs ? 'QPCHafs' : `p${verse.page_number}`);
           this.renderer.setProperty(wordSpan, 'innerHTML', `${quranicWord}`);
+          this.renderer.setAttribute(wordSpan, 'data-original', `${originalWordsArray[quranicWordIndex]}`);
           this.createLongPressGesture(wordSpan);
           verseDiv?.appendChild(wordSpan);
           verseLineDiv?.appendChild(verseDiv);
@@ -233,14 +236,14 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     });
   }
 
-  private createLongPressGesture(htmlElement: Node) {
+  private createLongPressGesture(htmlElement: HTMLElement) {
     const gesture = this.gestureCtrl.create({
       el: htmlElement,
       threshold: 0,
       gestureName: 'long-press',
       onStart: (ev: GestureDetail) => {
         this.longPressTimeout = setTimeout(() => {
-          this.handleLongPress(ev);
+          this.handleLongPress(htmlElement);
         }, this.longPressTimeoutTimeInMs);
       },
       onMove: (ev: GestureDetail) => {
@@ -252,7 +255,7 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
     gesture.enable(true);
   }
 
-  private async handleLongPress(event: GestureDetail) {
+  private async handleLongPress(htmlElement: HTMLElement) {
     const modal = await this.modalController.create(
       {
         component: NotePopoverComponent,
@@ -261,9 +264,22 @@ export class QuranPageComponent implements OnInit, AfterViewInit, ViewWillEnter,
         showBackdrop: true,
         cssClass: 'quran-note-popover',
         initialBreakpoint: 1,
-        breakpoints: [0, 1]
+        breakpoints: [0, 1],
       }
     );
+
+    const isWord = htmlElement.classList.contains('verse-word');
+    const classes = Array.from(htmlElement.classList);
+    const noteIdentifier = classes.find(
+      (cls) => cls !== 'verse-word' && cls !== 'verse-separator'
+    );
+    const noteHeader = isWord ? `كلمة ${htmlElement.attributes.getNamedItem("data-original")?.value}` : `الآية ${htmlElement.textContent}`;
+
+    modal.componentProps = {
+      isWord,
+      noteIdentifier,
+      noteHeader
+    };
 
     modal.present();
   }

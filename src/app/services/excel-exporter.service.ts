@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
-import { Student } from 'src/store/app-state.service';
 import * as XLSX from 'xlsx';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import saveAs from 'file-saver';
+import { Student } from 'src/store/interfaces/student.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +26,13 @@ export class ExcelExporterService {
     let topMemorizerCount = 0;
     let topAttendenceCount = 0;
     studentsData.forEach(person => {
-      person.attendance.forEach(record => {
+      person.attendance.forEach((record: any) => {
         if (!dates.includes(record.date)) {
           dates.push(record.date)
         }
       });
 
-      const memorizeCount = person.memorization.reduce((count, record) => {
+      const memorizeCount = person.memorization.reduce((count: any, record: any) => {
         if (record.hasParticipated) {
           return count + 1;
         }
@@ -44,7 +44,7 @@ export class ExcelExporterService {
         topMemorizer = person.name;
       }
 
-      const attendanceCount = person.attendance.reduce((count, record) => {
+      const attendanceCount = person.attendance.reduce((count: any, record: any) => {
         if (record.hasParticipated) {
           return count + 1;
         }
@@ -79,10 +79,10 @@ export class ExcelExporterService {
       const row = [person.name];
 
       sortedDates.forEach(date => {
-        const attendanceRecord = person.attendance.find(record => record.date === date);
+        const attendanceRecord = person.attendance.find((record: any) => record.date === date);
         const attendance = attendanceRecord ? `${attendanceRecord.hasParticipated ? 'نعم' : 'لا'}` : 'لا';
 
-        const memorizationRecord = person.memorization.find(record => record.date === date);
+        const memorizationRecord = person.memorization.find((record: any) => record.date === date);
         const memorization = memorizationRecord ? `${memorizationRecord.hasParticipated ? 'نعم' : 'لا'}` : 'لا';
 
         row.push(attendance);

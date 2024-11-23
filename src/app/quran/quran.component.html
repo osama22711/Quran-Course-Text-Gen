@@ -1,5 +1,5 @@
 <owl-carousel-o [options]="sliderOptions" #swiper>
-  <ng-template carouselSlide *ngFor="let pageNumber of pages">
+  <ng-template carouselSlide *ngFor="let pageNumber of pages" [id]="pageNumber.toString()">
     <quran-page [Page]="pageNumber" (quranLoadedEvent)="quranLoadedEvent($event)"
       [PageVerses]="this.getPageVerses(pageNumber)"></quran-page>
   </ng-template>

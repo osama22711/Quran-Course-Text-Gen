@@ -1,4 +1,5 @@
 import { Store } from "./generic-store";
+import { Student } from "./interfaces/student.interface";
 
 export class CourseTimeInStringState extends Store<string> {
   constructor() {
@@ -16,28 +17,4 @@ export class SubjectsState extends Store<string[] | null> {
   constructor() {
     super(null, "subjects");
   }
-}
-
-
-export interface Student {
-  name: string,
-  attendance: Participated[],
-  memorization: Memorization[]
-}
-
-export interface Participated {
-  date: string,
-  hasParticipated: boolean
-}
-
-export interface Memorization {
-  date: string,
-  hasParticipated: boolean,
-  pages?: number[],
-  mistakes?: MemorizationMistake[]
-}
-
-export interface MemorizationMistake {
-  quranicWord: string,
-  note: string
 }

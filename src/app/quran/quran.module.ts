@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { QuranPageComponent } from './quran-page/quran-page.component';
 import { NotePopoverComponent } from './note-popover/note-popover.component';
 import { LoaderService } from '../services/loader.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: QuranComponent }
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     IonicModule,
     CarouselModule,
+    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
   providers: [LoaderService],
